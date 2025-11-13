@@ -77,7 +77,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
                 </h1>
                 <p className="text-muted-foreground">{car.year} Model</p>
               </div>
-              {car.isFeatured && (
+              {car.featured && (
                 <Badge variant="default">Öne Çıkan</Badge>
               )}
             </div>
