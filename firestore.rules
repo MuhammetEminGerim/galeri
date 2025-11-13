@@ -1,0 +1,23 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Yardımcı fonksiyonlar
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Araçlar - Okuma herkese açık, yazma sadece admin
+    match /cars/{carId} {
+      allow read: if true;
+      allow create, update, delete: if isAuthenticated();
+    }
+    
+    // İletişim formları - Yazma herkese açık, okuma sadece admin
+    match /contacts/{contactId} {
+      allow read: if isAuthenticated();
+      allow create: if true;
+    }
+  }
+}
+
