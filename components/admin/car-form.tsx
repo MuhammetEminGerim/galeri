@@ -31,7 +31,7 @@ const carSchema = z.object({
   color: z.string().min(1, 'Renk gerekli'),
   description: z.string(),
   status: z.enum(['available', 'sold', 'reserved']),
-  isFeatured: z.boolean(),
+  featured: z.boolean(),
 });
 
 type CarFormData = z.infer<typeof carSchema>;
@@ -60,7 +60,7 @@ export function CarForm({ car, isEdit = false }: CarFormProps) {
       color: car?.color || '',
       description: car?.description || '',
       status: car?.status || 'available',
-      isFeatured: car?.isFeatured || false,
+      featured: car?.featured || false,
     },
   });
 
@@ -478,7 +478,7 @@ export function CarForm({ car, isEdit = false }: CarFormProps) {
           <CardContent className="pt-6">
             <FormField
               control={form.control}
-              name="isFeatured"
+              name="featured"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-start space-x-4 space-y-0">
                   <FormControl>
