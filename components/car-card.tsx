@@ -29,8 +29,7 @@ export function CarCard({ car, showCompare = true }: CarCardProps) {
     toast.success(isFavorite(car.id) ? 'Favorilerden çıkarıldı' : 'Favorilere eklendi');
   };
 
-  const handleCompareChange = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const handleCompareChange = (checked: boolean | "indeterminate") => {
     const added = toggleCompare(car.id);
     if (added === false && !isInCompare(car.id)) {
       toast.error('En fazla 3 araç karşılaştırabilirsiniz');
