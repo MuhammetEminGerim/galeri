@@ -24,8 +24,8 @@ export const SORT_OPTIONS = [
 ] as const;
 
 export const CONTACT_INFO = {
-  phone: '+90 XXX XXX XX XX',
-  email: 'info@galeri.com',
-  address: 'Adres Bilgisi',
-  whatsapp: '+90XXXXXXXXXX',
+  phone: '+90 545 214 13 08',
+  email: 'info@bolenotomotiv.com',
+  address: 'Alpağut, İzzet Baysal Devlet Hst. Blv. no:177 D:1, 14100 Bolu Merkez/Bolu',
+  whatsapp: '+905452141308',
 } as const;

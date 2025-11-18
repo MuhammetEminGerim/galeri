@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, Send, MessageCircle } from 'lucide-react';
 import { CONTACT_INFO } from '@/lib/constants';
 import { submitContact } from '@/lib/db/contacts';
 import { toast } from 'sonner';
@@ -108,6 +108,19 @@ export default function IletisimPage() {
                     <p className="text-sm text-muted-foreground">Pazartesi - Cumartesi</p>
                     <p className="text-sm text-muted-foreground">09:00 - 19:00</p>
                   </div>
+                </div>
+                
+                <div className="pt-4 border-t">
+                  <a
+                    href={`https://wa.me/${CONTACT_INFO.whatsapp}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-md hover:shadow-lg transition-all">
+                      <MessageCircle className="h-4 w-4 mr-2" />
+                      WhatsApp ile İletişime Geç
+                    </Button>
+                  </a>
                 </div>
               </CardContent>
             </Card>
