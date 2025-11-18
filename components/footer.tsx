@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { Car, Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react';
+import Image from 'next/image';
+import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react';
 import { CONTACT_INFO } from '@/lib/constants';
 
 export function Footer() {
@@ -11,9 +12,16 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo ve Açıklama */}
           <div className="space-y-4">
-            <Link href="/" className="flex items-center space-x-2">
-              <Car className="h-6 w-6" />
-              <span className="text-xl font-bold">AutoGaleri</span>
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="relative w-10 h-10">
+                <Image
+                  src="/logo.png"
+                  alt="Bölen Otomotiv"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <span className="text-xl font-bold group-hover:text-primary transition-colors">Bölen Otomotiv</span>
             </Link>
             <p className="text-sm text-muted-foreground">
               Güvenilir ve kaliteli araçlar için doğru adres. Hayalinizdeki aracı bulmanız için buradayız.
@@ -121,7 +129,7 @@ export function Footer() {
         </div>
 
         <div className="mt-12 pt-8 !border-t !border-gray-400 dark:!border-gray-700 text-center text-sm text-muted-foreground">
-          <p>&copy; {currentYear} AutoGaleri. Tüm hakları saklıdır.</p>
+          <p>&copy; {currentYear} Bölen Otomotiv. Tüm hakları saklıdır.</p>
         </div>
       </div>
     </footer>

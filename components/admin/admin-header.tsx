@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '../ui/button';
-import { Car, LogOut, LayoutDashboard, ListIcon, PlusCircle, ExternalLink } from 'lucide-react';
+import { LogOut, LayoutDashboard, ListIcon, PlusCircle, ExternalLink } from 'lucide-react';
 import { signOutAdmin } from '@/lib/db/auth';
 import { toast } from 'sonner';
 
@@ -34,13 +35,18 @@ export function AdminHeader() {
           <Link href="/admin/dashboard" className="flex items-center gap-3 group">
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg blur-md opacity-50 group-hover:opacity-75 transition-opacity" />
-              <div className="relative p-2 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 shadow-lg">
-                <Car className="h-5 w-5 text-white" />
+              <div className="relative w-12 h-12 p-1.5 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 shadow-lg">
+                <Image
+                  src="/logo.png"
+                  alt="Bölen Otomotiv"
+                  fill
+                  className="object-contain p-1"
+                />
               </div>
             </div>
             <div>
               <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
-                AutoGaleri
+                Bölen Otomotiv
               </span>
               <span className="block text-[10px] text-muted-foreground -mt-1">Admin Panel</span>
             </div>

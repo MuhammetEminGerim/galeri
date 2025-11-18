@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
-import { Car, Heart, Menu, X, Search } from 'lucide-react';
+import { Heart, Menu, X, Search } from 'lucide-react';
 import { Button } from './ui/button';
 import { useCompare } from '@/hooks/useCompare';
 import { useFavorites } from '@/hooks/useFavorites';
@@ -22,9 +23,17 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full !border-b !border-gray-400 dark:!border-gray-700 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 !shadow-[0_1px_3px_rgba(0,0,0,0.15)] dark:!shadow-[0_1px_3px_rgba(0,0,0,0.4)]">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
-          <Car className="h-6 w-6" />
-          <span className="text-xl font-bold">AutoGaleri</span>
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="relative w-10 h-10">
+            <Image
+              src="/logo.png"
+              alt="Bölen Otomotiv"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
+          <span className="text-xl font-bold group-hover:text-primary transition-colors">Bölen Otomotiv</span>
         </Link>
 
         {/* Desktop Navigation */}

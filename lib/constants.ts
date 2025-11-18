@@ -1,7 +1,7 @@
 export const SITE_CONFIG = {
-  name: 'AutoGaleri',
+  name: 'Bölen Otomotiv',
   description: 'Güvenilir ve kaliteli araçlar için doğru adres. Hayalinizdeki aracı bulmanız için buradayız.',
-  url: 'https://autogaleri.com',
+  url: 'https://dynamic-chimera-6ea2ff.netlify.app',
 } as const;
 
 export const FUEL_TYPES = ['Benzin', 'Dizel', 'Hibrit', 'Elektrik', 'LPG'] as const;
