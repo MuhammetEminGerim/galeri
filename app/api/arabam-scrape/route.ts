@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as cheerio from 'cheerio';
 
+// Netlify için runtime belirt (Node.js runtime gerekli - cheerio için)
+export const runtime = 'nodejs';
+export const maxDuration = 30; // 30 saniye timeout
+
 // CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
