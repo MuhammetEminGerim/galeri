@@ -11,4 +11,5 @@
   
 [build.environment]
   NEXT_PRIVATE_TURBOPACK = "0"
+  NODE_VERSION = "20"
 

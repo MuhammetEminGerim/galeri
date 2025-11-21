@@ -4,6 +4,8 @@ import * as cheerio from 'cheerio';
 // Netlify için runtime belirt (Node.js runtime gerekli - cheerio için)
 export const runtime = 'nodejs';
 export const maxDuration = 30; // 30 saniye timeout
+export const dynamic = 'force-dynamic'; // Netlify için dynamic route
+export const revalidate = 0; // Cache'i devre dışı bırak
 
 // CORS headers
 const corsHeaders = {
