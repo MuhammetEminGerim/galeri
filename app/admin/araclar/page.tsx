@@ -5,7 +5,7 @@ import { AuthGuard } from '@/components/admin/auth-guard';
 import { Car } from '@/types/car';
 import { getAllCars, deleteCar } from '@/lib/db/cars';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2, Eye } from 'lucide-react';
+import { Plus, Pencil, Trash2, Eye, Upload } from 'lucide-react';
 import Link from 'next/link';
 import { formatPrice, formatKm } from '@/lib/utils/formatters';
 import { Badge } from '@/components/ui/badge';
@@ -69,12 +69,20 @@ export default function AdminCarsPage() {
               {loading ? 'Yükleniyor...' : `Toplam ${cars.length} araç`}
             </p>
           </div>
-          <Link href="/admin/araclar/yeni">
-            <Button size="lg">
-              <Plus className="h-4 w-4 mr-2" />
-              Yeni Araç Ekle
-            </Button>
-          </Link>
+          <div className="flex gap-3">
+            <Link href="/admin/araclar/toplu-ekle">
+              <Button size="lg" variant="outline" className="!border !border-gray-500 dark:!border-gray-600">
+                <Upload className="h-4 w-4 mr-2" />
+                Toplu Ekle
+              </Button>
+            </Link>
+            <Link href="/admin/araclar/yeni">
+              <Button size="lg">
+                <Plus className="h-4 w-4 mr-2" />
+                Yeni Araç Ekle
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {loading ? (
