@@ -1,6 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as cheerio from 'cheerio';
 
+// CORS headers
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+};
+
+// OPTIONS handler for CORS preflight
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders });
+}
+
 interface ScrapedCar {
   brand: string;
   model: string;
@@ -76,21 +88,42 @@ export async function POST(request: NextRequest) {
     if (!url || !url.includes('arabam.com')) {
       return NextResponse.json(
         { error: 'Geçerli bir arabam.com URL\'si girin' },
-        { status: 400 }
+        { status: 400, headers: corsHeaders }
       );
     }
 
     // Galeri sayfasından tüm araç linklerini çek
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-      },
-    });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 saniye timeout
+    
+    let response: Response;
+    try {
+      response = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+          'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
+          'Referer': 'https://www.arabam.com/',
+        },
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error instanceof Error && error.name === 'AbortError') {
+        return NextResponse.json(
+          { error: 'İstek zaman aşımına uğradı (30 saniye)' },
+          { status: 408, headers: corsHeaders }
+        );
+      }
+      throw error;
+    }
 
     if (!response.ok) {
+      console.error(`Fetch error: ${response.status} ${response.statusText}`);
       return NextResponse.json(
-        { error: 'Sayfa yüklenemedi' },
-        { status: response.status }
+        { error: `Sayfa yüklenemedi (${response.status})` },
+        { status: response.status, headers: corsHeaders }
       );
     }
 
@@ -193,7 +226,10 @@ export async function POST(request: NextRequest) {
 
     // Eğer tablodan veri çekildiyse, onları kullan
     if (tableCars.length > 0) {
-      return NextResponse.json({ cars: tableCars, count: tableCars.length });
+      return NextResponse.json(
+        { cars: tableCars, count: tableCars.length },
+        { headers: corsHeaders }
+      );
     }
 
     // Tablodan çekilemediyse, detay sayfalarına git
@@ -307,12 +343,15 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    return NextResponse.json({ cars, count: cars.length });
+    return NextResponse.json(
+      { cars, count: cars.length },
+      { headers: corsHeaders }
+    );
   } catch (error) {
     console.error('Scraping error:', error);
     return NextResponse.json(
       { error: 'Araçlar çekilirken bir hata oluştu', details: error instanceof Error ? error.message : 'Bilinmeyen hata' },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 }
