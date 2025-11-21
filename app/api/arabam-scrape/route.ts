@@ -187,7 +187,7 @@ export async function POST(request: NextRequest) {
         }
       } catch (error) {
         console.error('Tablo satırı parse hatası:', error);
-        continue;
+        return; // continue yerine return kullan (callback içinde)
       }
     });
 
