@@ -119,9 +119,11 @@ const scrapeArabam = async (url) => {
     const cars = [];
 
     // Tablodaki araçları çek
-    $('table tbody tr').each((_, row) => {
+    const rows = $('table tbody tr').toArray();
+    
+    for (let i = 0; i < rows.length; i++) {
       try {
-        const $row = $(row);
+        const $row = $(rows[i]);
         
         // Model bilgisi
         const modelText = $row.find('td').eq(1).text().trim() || 
@@ -148,10 +150,114 @@ const scrapeArabam = async (url) => {
         const priceText = $row.find('td').eq(6).text().trim();
         const price = parsePrice(priceText);
         
-        // Resim
-        const imgSrc = $row.find('img').first().attr('src') || 
-                     $row.find('img').first().attr('data-src');
-        const images = imgSrc ? [imgSrc.startsWith('http') ? imgSrc : `https://www.arabam.com${imgSrc}`] : [];
+        // Resimler - Her zaman detay sayfasından çek (daha güvenilir)
+        const images = [];
+        const link = $row.find('a[href*="/ilan/"]').first().attr('href');
+        
+        if (link) {
+          const fullLink = link.startsWith('http') ? link : `https://www.arabam.com${link}`;
+          console.log(`  📷 Resimler için detay sayfası çekiliyor: ${fullLink.substring(0, 60)}...`);
+          try {
+            await new Promise(resolve => setTimeout(resolve, 2000)); // Rate limiting (2 saniye)
+            const detailHtml = await fetchHTML(fullLink);
+            const $detail = cheerio.load(detailHtml);
+            
+            // Detay sayfasındaki resimleri çek - farklı selector'lar dene
+            const imageSelectors = [
+              'img[src*="ilanfotograflari"]',
+              'img[data-src*="ilanfotograflari"]',
+              'img[data-lazy-src*="ilanfotograflari"]',
+              'img[src*="arbimg"]',
+              'img[data-src*="arbimg"]',
+              'img[src*="/ilan/"]',
+              'img[data-src*="/ilan/"]',
+              '[class*="image"] img',
+              '[class*="photo"] img',
+              '[class*="gallery"] img',
+              '[class*="foto"] img',
+              '[class*="resim"] img',
+            ];
+            
+            imageSelectors.forEach(selector => {
+              $detail(selector).each((_, img) => {
+                const $img = $detail(img);
+                const imgSrc = $img.attr('src') || 
+                              $img.attr('data-src') || 
+                              $img.attr('data-lazy-src') ||
+                              $img.attr('data-original') ||
+                              $img.attr('data-url') ||
+                              $img.attr('data-image');
+                
+                if (imgSrc && 
+                    !imgSrc.includes('logo') && 
+                    !imgSrc.includes('icon') && 
+                    !imgSrc.includes('placeholder') &&
+                    !imgSrc.includes('avatar') &&
+                    !imgSrc.includes('noImage') &&
+                    !imgSrc.includes('spacer') &&
+                    (imgSrc.includes('ilanfotograflari') || 
+                     imgSrc.includes('arbimg') || 
+                     imgSrc.includes('/ilan/') ||
+                     imgSrc.includes('arabam.com/ilan'))) {
+                  let fullUrl = imgSrc.startsWith('http') 
+                    ? imgSrc 
+                    : imgSrc.startsWith('//') 
+                      ? `https:${imgSrc}`
+                      : `https://www.arabam.com${imgSrc}`;
+                  
+                  // Thumbnail'leri full size'a çevir (eğer mümkünse)
+                  fullUrl = fullUrl.replace(/_160x120|_300x225|_640x480|_thumb|thumbnail/g, '');
+                  
+                  // Duplicate kontrolü
+                  if (!images.includes(fullUrl) && images.length < 10) {
+                    images.push(fullUrl);
+                  }
+                }
+              });
+            });
+            
+            // Eğer hala resim bulunamadıysa, tablodaki ilk resmi al
+            if (images.length === 0) {
+              const firstImg = $row.find('img').first();
+              const imgSrc = firstImg.attr('src') || firstImg.attr('data-src');
+              if (imgSrc && !imgSrc.includes('logo') && !imgSrc.includes('icon')) {
+                const fullUrl = imgSrc.startsWith('http') 
+                  ? imgSrc 
+                  : imgSrc.startsWith('//') 
+                    ? `https:${imgSrc}`
+                    : `https://www.arabam.com${imgSrc}`;
+                images.push(fullUrl);
+              }
+            }
+            
+            console.log(`  ✅ ${images.length} resim bulundu`);
+          } catch (error) {
+            console.error(`  ⚠️  Detay sayfası hatası: ${error.message}`);
+            // Hata durumunda tablodaki resmi al
+            const firstImg = $row.find('img').first();
+            const imgSrc = firstImg.attr('src') || firstImg.attr('data-src');
+            if (imgSrc && !imgSrc.includes('logo') && !imgSrc.includes('icon')) {
+              const fullUrl = imgSrc.startsWith('http') 
+                ? imgSrc 
+                : imgSrc.startsWith('//') 
+                  ? `https:${imgSrc}`
+                  : `https://www.arabam.com${imgSrc}`;
+              images.push(fullUrl);
+            }
+          }
+        } else {
+          // Link yoksa tablodaki resmi al
+          const firstImg = $row.find('img').first();
+          const imgSrc = firstImg.attr('src') || firstImg.attr('data-src');
+          if (imgSrc && !imgSrc.includes('logo') && !imgSrc.includes('icon')) {
+            const fullUrl = imgSrc.startsWith('http') 
+              ? imgSrc 
+              : imgSrc.startsWith('//') 
+                ? `https:${imgSrc}`
+                : `https://www.arabam.com${imgSrc}`;
+            images.push(fullUrl);
+          }
+        }
         
         if (brand && model && price > 0) {
           const titleLower = title.toLowerCase();
@@ -168,7 +274,7 @@ const scrapeArabam = async (url) => {
             transmissionType,
             color,
             description: title,
-            images,
+            images: images.slice(0, 10), // Max 10 resim
             status: 'available',
             featured: false,
           });
@@ -176,7 +282,7 @@ const scrapeArabam = async (url) => {
       } catch (error) {
         console.error('Araç parse hatası:', error.message);
       }
-    });
+    }
 
     if (cars.length === 0) {
       console.warn('⚠️  Tabloda araç bulunamadı, alternatif yöntem deneniyor...');
@@ -209,8 +315,36 @@ const scrapeArabam = async (url) => {
                            $car('span:contains("TL")').first().text().trim();
           const price = parsePrice(priceText);
           
+          // Resimleri çek
+          const images = [];
+          $car('img[src*="arabam"], img[data-src*="arabam"], img[data-lazy-src*="arabam"], img[src*="/ilan/"], img[data-src*="/ilan/"]').each((_, img) => {
+            const $img = $car(img);
+            const imgSrc = $img.attr('src') || 
+                          $img.attr('data-src') || 
+                          $img.attr('data-lazy-src') ||
+                          $img.attr('data-original');
+            
+            if (imgSrc && 
+                !imgSrc.includes('logo') && 
+                !imgSrc.includes('icon') && 
+                !imgSrc.includes('placeholder') &&
+                !imgSrc.includes('avatar') &&
+                (imgSrc.includes('arabam') || imgSrc.includes('/ilan/'))) {
+              const fullUrl = imgSrc.startsWith('http') 
+                ? imgSrc 
+                : imgSrc.startsWith('//') 
+                  ? `https:${imgSrc}`
+                  : `https://www.arabam.com${imgSrc}`;
+              
+              if (!images.includes(fullUrl) && images.length < 10) {
+                images.push(fullUrl);
+              }
+            }
+          });
+          
           if (brand && model && price > 0) {
             const titleLower = title.toLowerCase();
+            console.log(`  ✅ ${brand} ${model} - ${images.length} resim bulundu`);
             cars.push({
               brand,
               model,
@@ -221,7 +355,7 @@ const scrapeArabam = async (url) => {
               transmissionType: mapTransmissionType(titleLower),
               color: 'Belirtilmemiş',
               description: title,
-              images: [],
+              images: images.slice(0, 10), // Max 10 resim
               status: 'available',
               featured: false,
             });
