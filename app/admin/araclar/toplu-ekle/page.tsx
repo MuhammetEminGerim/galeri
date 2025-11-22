@@ -4,9 +4,8 @@ import { useState } from 'react';
 import { AuthGuard } from '@/components/admin/auth-guard';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Upload, FileText, Loader2, CheckCircle2, AlertCircle, Download } from 'lucide-react';
+import { Upload, FileText, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { addCar } from '@/lib/db/cars';
 import { toast } from 'sonner';
 import { Car } from '@/types/car';
@@ -30,8 +29,6 @@ export default function TopluEklePage() {
   const [jsonInput, setJsonInput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [results, setResults] = useState<{ success: number; failed: number; errors: string[] } | null>(null);
-  const [arabamUrl, setArabamUrl] = useState('https://www.arabam.com/galeri/bolen-otomotiv');
-  const [isScraping, setIsScraping] = useState(false);
 
   const exampleJson = `[
   {
@@ -150,41 +147,6 @@ export default function TopluEklePage() {
     setJsonInput(exampleJson);
   };
 
-  const handleScrapeFromArabam = async () => {
-    if (!arabamUrl.trim()) {
-      toast.error('Lütfen bir URL girin');
-      return;
-    }
-
-    setIsScraping(true);
-    try {
-      const response = await fetch('/api/arabam-scrape', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url: arabamUrl }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Araçlar çekilemedi');
-      }
-
-      if (data.cars && data.cars.length > 0) {
-        setJsonInput(JSON.stringify(data.cars, null, 2));
-        toast.success(`${data.count} araç başarıyla çekildi!`);
-      } else {
-        toast.warning('Hiç araç bulunamadı');
-      }
-    } catch (error) {
-      console.error('Scraping error:', error);
-      toast.error(error instanceof Error ? error.message : 'Araçlar çekilirken bir hata oluştu');
-    } finally {
-      setIsScraping(false);
-    }
-  };
 
   return (
     <AuthGuard>
@@ -245,55 +207,36 @@ export default function TopluEklePage() {
             </CardContent>
           </Card>
 
-          {/* Arabam.com Scraping */}
+          {/* Script Kullanım Talimatları */}
           <Card className="!border !border-gray-500 dark:!border-gray-600 !shadow-[0_2px_8px_rgba(0,0,0,0.15)] dark:!shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
             <CardHeader className="!border-b !border-gray-400 dark:!border-gray-700 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-gradient-to-br from-orange-500 to-amber-500 shadow-md">
-                  <Download className="h-5 w-5 text-white" />
+                  <FileText className="h-5 w-5 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl">Arabam.com'dan Otomatik Çek</CardTitle>
+                  <CardTitle className="text-xl">Arabam.com'dan Araç Çekme (Script)</CardTitle>
                   <CardDescription className="mt-1">
-                    Galeri sayfasından araçları otomatik olarak çekin
+                    Local script ile arabam.com'dan araçları çekin
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="pt-6 space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Arabam.com Galeri URL'si</label>
-                <Input
-                  value={arabamUrl}
-                  onChange={(e) => setArabamUrl(e.target.value)}
-                  placeholder="https://www.arabam.com/galeri/bolen-otomotiv"
-                  className="font-mono text-sm"
-                />
-                <p className="text-xs text-muted-foreground">
-                  Galeri sayfasının URL'sini girin (örn: https://www.arabam.com/galeri/bolen-otomotiv)
-                </p>
+              <div className="space-y-2 text-sm">
+                <p className="font-semibold">📋 Adımlar:</p>
+                <ol className="list-decimal list-inside space-y-1 text-muted-foreground ml-4">
+                  <li>Terminal/Command Prompt'u açın</li>
+                  <li>Proje klasörüne gidin: <code className="bg-muted px-1 rounded">cd galeri</code></li>
+                  <li>Script'i çalıştırın: <code className="bg-muted px-1 rounded">node scripts/scrape-arabam.js https://www.arabam.com/galeri/bolen-otomotiv</code></li>
+                  <li>Console'da çıkan JSON'u kopyalayın</li>
+                  <li>Bu sayfadaki JSON alanına yapıştırın</li>
+                  <li>"Araçları Ekle" butonuna tıklayın</li>
+                </ol>
               </div>
-              <Button
-                onClick={handleScrapeFromArabam}
-                disabled={isScraping || !arabamUrl.trim()}
-                size="lg"
-                className="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 shadow-lg hover:shadow-xl transition-all"
-              >
-                {isScraping ? (
-                  <>
-                    <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                    Araçlar Çekiliyor...
-                  </>
-                ) : (
-                  <>
-                    <Download className="h-5 w-5 mr-2" />
-                    Arabam.com'dan Araçları Çek
-                  </>
-                )}
-              </Button>
-              <div className="pt-2 border-t">
+              <div className="pt-4 border-t">
                 <p className="text-xs text-muted-foreground">
-                  💡 <strong>Not:</strong> Araçlar çekildikten sonra JSON formatında görünecek. İsterseniz düzenleyip "Araçları Ekle" butonuna tıklayabilirsiniz.
+                  💡 <strong>Not:</strong> Script local'de çalıştığı için bot koruması daha az etkili olur. Script çıktısını direkt bu sayfaya yapıştırabilirsiniz.
                 </p>
               </div>
             </CardContent>
