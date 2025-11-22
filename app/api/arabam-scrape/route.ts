@@ -98,37 +98,88 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Galeri sayfasından tüm araç linklerini çek
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 saniye timeout
+    // Galeri sayfasından tüm araç linklerini çek (retry mekanizması ile)
+    const fetchWithRetry = async (url: string, retries = 3): Promise<Response> => {
+      for (let i = 0; i < retries; i++) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000);
+        
+        try {
+          // Her denemede farklı User-Agent kullan
+          const userAgents = [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          ];
+          
+          const response = await fetch(url, {
+            headers: {
+              'User-Agent': userAgents[i % userAgents.length],
+              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+              'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
+              'Accept-Encoding': 'gzip, deflate, br',
+              'Referer': 'https://www.arabam.com/',
+              'Origin': 'https://www.arabam.com',
+              'Connection': 'keep-alive',
+              'Upgrade-Insecure-Requests': '1',
+              'Sec-Fetch-Dest': 'document',
+              'Sec-Fetch-Mode': 'navigate',
+              'Sec-Fetch-Site': 'same-origin',
+              'Sec-Fetch-User': '?1',
+              'Cache-Control': 'max-age=0',
+            },
+            signal: controller.signal,
+            // Redirect'leri takip et
+            redirect: 'follow',
+          });
+          
+          clearTimeout(timeoutId);
+          
+          if (response.ok) {
+            return response;
+          }
+          
+          // 403 hatası alırsak, bir sonraki denemeyi bekle
+          if (response.status === 403 && i < retries - 1) {
+            console.log(`403 hatası alındı, ${i + 1}. deneme. ${2 - i} deneme kaldı...`);
+            await new Promise(resolve => setTimeout(resolve, 2000 * (i + 1))); // Exponential backoff
+            continue;
+          }
+          
+          return response;
+        } catch (error) {
+          clearTimeout(timeoutId);
+          if (error instanceof Error && error.name === 'AbortError') {
+            if (i < retries - 1) {
+              console.log(`Timeout, ${i + 1}. deneme. ${2 - i} deneme kaldı...`);
+              await new Promise(resolve => setTimeout(resolve, 2000 * (i + 1)));
+              continue;
+            }
+            throw new Error('İstek zaman aşımına uğradı (30 saniye)');
+          }
+          if (i === retries - 1) throw error;
+          await new Promise(resolve => setTimeout(resolve, 2000 * (i + 1)));
+        }
+      }
+      
+      throw new Error('Tüm denemeler başarısız oldu');
+    };
     
     let response: Response;
     try {
-      response = await fetch(url, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-          'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7',
-          'Referer': 'https://www.arabam.com/',
-        },
-        signal: controller.signal,
-      });
-      clearTimeout(timeoutId);
+      response = await fetchWithRetry(url);
     } catch (error) {
-      clearTimeout(timeoutId);
-      if (error instanceof Error && error.name === 'AbortError') {
-        return NextResponse.json(
-          { error: 'İstek zaman aşımına uğradı (30 saniye)' },
-          { status: 408, headers: corsHeaders }
-        );
-      }
-      throw error;
+      console.error('Fetch error:', error);
+      return NextResponse.json(
+        { error: error instanceof Error ? error.message : 'Sayfa yüklenemedi' },
+        { status: 500, headers: corsHeaders }
+      );
     }
 
     if (!response.ok) {
       console.error(`Fetch error: ${response.status} ${response.statusText}`);
       return NextResponse.json(
-        { error: `Sayfa yüklenemedi (${response.status})` },
+        { error: `Sayfa yüklenemedi (${response.status}). Arabam.com bot koruması aktif olabilir.` },
         { status: response.status, headers: corsHeaders }
       );
     }
