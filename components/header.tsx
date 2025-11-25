@@ -37,8 +37,11 @@ export function Header() {
             <span className="text-xl font-bold group-hover:text-primary transition-colors">
               Bölen Otomotiv
             </span>
-            <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
-              1. yıl
+            <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-xs font-semibold text-orange-500 underline underline-offset-4 decoration-2 decoration-orange-500">
+              1.
+              <span className="ml-1 font-normal" style={{ fontFamily: 'Dancing Script, cursive' }}>
+                Yıl
+              </span>
             </span>
           </div>
         </Link>
