@@ -33,7 +33,14 @@ export function Header() {
               priority
             />
           </div>
-          <span className="text-xl font-bold group-hover:text-primary transition-colors">Bölen Otomotiv</span>
+          <div className="flex items-center gap-2">
+            <span className="text-xl font-bold group-hover:text-primary transition-colors">
+              Bölen Otomotiv
+            </span>
+            <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
+              1. yıl
+            </span>
+          </div>
         </Link>
 
         {/* Desktop Navigation */}
