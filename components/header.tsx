@@ -33,13 +33,13 @@ export function Header() {
               priority
             />
           </div>
-          <div className="flex flex-col leading-none gap-1">
+          <div className="flex items-end gap-3 leading-none">
             <span className="text-xl font-bold group-hover:text-primary transition-colors">
               Bölen Otomotiv
             </span>
             <span
-              className="relative inline-flex text-2xl font-semibold text-orange-500 after:absolute after:left-0 after:right-0 after:-bottom-2 after:h-[3px] after:rounded-full after:bg-orange-500 after:content-['']"
-              style={{ fontFamily: 'var(--font-anniversary)' }}
+              className="relative inline-flex text-[1.35rem] font-semibold text-orange-500 after:absolute after:left-0 after:right-0 after:-bottom-1 after:h-[3px] after:rounded-full after:bg-orange-500 after:content-['']"
+              style={{ fontFamily: 'var(--font-anniversary)', letterSpacing: '0.5px' }}
             >
               1. Yıl
             </span>
