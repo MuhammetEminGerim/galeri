@@ -33,16 +33,16 @@ export function Header() {
               priority
             />
           </div>
-          <div className="flex items-center gap-3 leading-none">
+          <div className="flex items-center gap-2 leading-none">
             <span className="text-xl font-bold group-hover:text-primary transition-colors">
               Bölen Otomotiv
             </span>
-            <div className="relative h-10 w-28">
+            <div className="relative h-8 w-20 md:h-9 md:w-24">
               <Image
                 src="/anniversary.png"
                 alt="1. Yıl"
                 fill
-                sizes="112px"
+                sizes="96px"
                 className="object-contain"
                 priority={false}
               />
