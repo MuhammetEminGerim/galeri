@@ -33,16 +33,20 @@ export function Header() {
               priority
             />
           </div>
-          <div className="flex items-end gap-3 leading-none">
+          <div className="flex items-center gap-3 leading-none">
             <span className="text-xl font-bold group-hover:text-primary transition-colors">
               Bölen Otomotiv
             </span>
-            <span
-              className="relative inline-flex text-[1.35rem] font-semibold text-orange-500 after:absolute after:left-0 after:right-0 after:-bottom-1 after:h-[3px] after:rounded-full after:bg-orange-500 after:content-['']"
-              style={{ fontFamily: 'var(--font-anniversary)', letterSpacing: '0.5px' }}
-            >
-              1. Yıl
-            </span>
+            <div className="relative h-10 w-28">
+              <Image
+                src="/anniversary.png"
+                alt="1. Yıl"
+                fill
+                sizes="112px"
+                className="object-contain"
+                priority={false}
+              />
+            </div>
           </div>
         </Link>
 
