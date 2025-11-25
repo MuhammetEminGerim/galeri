@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
 
 @custom-variant dark (&:is(.dark *));
 
@@ -45,6 +46,7 @@
 
 :root {
   --radius: 0.625rem;
+  --font-anniversary: "Pacifico", "Dancing Script", cursive;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);

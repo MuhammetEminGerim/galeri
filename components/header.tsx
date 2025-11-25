@@ -33,15 +33,15 @@ export function Header() {
               priority
             />
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col leading-none gap-1">
             <span className="text-xl font-bold group-hover:text-primary transition-colors">
               Bölen Otomotiv
             </span>
-            <span className="rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 text-xs font-semibold text-orange-500 underline underline-offset-4 decoration-2 decoration-orange-500">
-              1.
-              <span className="ml-1 font-normal" style={{ fontFamily: 'Dancing Script, cursive' }}>
-                Yıl
-              </span>
+            <span
+              className="relative inline-flex text-2xl font-semibold text-orange-500 after:absolute after:left-0 after:right-0 after:-bottom-2 after:h-[3px] after:rounded-full after:bg-orange-500 after:content-['']"
+              style={{ fontFamily: 'var(--font-anniversary)' }}
+            >
+              1. Yıl
             </span>
           </div>
         </Link>
