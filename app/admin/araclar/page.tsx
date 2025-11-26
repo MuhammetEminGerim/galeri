@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import { AuthGuard } from '@/components/admin/auth-guard';
 import { Car } from '@/types/car';
-import { getAllCars, deleteCar } from '@/lib/db/cars';
+import { getAllCars, deleteCar, updateCar } from '@/lib/db/cars';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2, Eye, Upload } from 'lucide-react';
+import { Plus, Pencil, Trash2, Eye, Upload, Star } from 'lucide-react';
 import Link from 'next/link';
 import { formatPrice, formatKm } from '@/lib/utils/formatters';
 import { Badge } from '@/components/ui/badge';
@@ -126,6 +126,24 @@ export default function AdminCarsPage() {
                   </div>
 
                   <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className={`!border !border-gray-500 dark:!border-gray-600 ${car.featured ? 'text-amber-500 hover:text-amber-600' : 'text-gray-400 hover:text-amber-500'
+                        }`}
+                      onClick={async () => {
+                        try {
+                          await updateCar(car.id, { featured: !car.featured });
+                          setCars(cars.map(c => c.id === car.id ? { ...c, featured: !c.featured } : c));
+                          toast.success(car.featured ? 'Öne çıkanlardan kaldırıldı' : 'Öne çıkanlara eklendi');
+                        } catch (error) {
+                          console.error('Error updating car:', error);
+                          toast.error('Güncelleme başarısız');
+                        }
+                      }}
+                    >
+                      <Star className={`h-4 w-4 ${car.featured ? 'fill-current' : ''}`} />
+                    </Button>
                     <Link href={`/araclar/${car.id}`} target="_blank">
                       <Button variant="outline" size="icon" className="!border !border-gray-500 dark:!border-gray-600">
                         <Eye className="h-4 w-4" />

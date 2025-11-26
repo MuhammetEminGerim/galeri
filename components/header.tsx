@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Heart, Menu, X, Search } from 'lucide-react';
 import { Button } from './ui/button';
 import { useCompare } from '@/hooks/useCompare';
@@ -10,6 +10,7 @@ import { useFavorites } from '@/hooks/useFavorites';
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { compareList } = useCompare();
   const { favorites } = useFavorites();
 
@@ -19,9 +20,19 @@ export function Header() {
     { href: '/iletisim', label: 'İletişim' },
   ];
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-50 w-full !border-b !border-gray-400 dark:!border-gray-700 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 !shadow-[0_1px_3px_rgba(0,0,0,0.15)] dark:!shadow-[0_1px_3px_rgba(0,0,0,0.4)]">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+    <header className={`sticky top-0 z-50 w-full !border-b !border-gray-400 dark:!border-gray-700 bg-background/95 supports-[backdrop-filter]:bg-background/60 !shadow-[0_1px_3px_rgba(0,0,0,0.15)] dark:!shadow-[0_1px_3px_rgba(0,0,0,0.4)] transition duration-300 ${isScrolled ? 'backdrop-blur-md' : ''}`}>
+      <div className="mx-auto flex h-16 w-full max-w-none items-center pl-6 pr-0 gap-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group">
           <div className="relative w-10 h-10">
@@ -33,17 +44,17 @@ export function Header() {
               priority
             />
           </div>
-          <div className="flex items-center gap-2 leading-none">
+          <div className="flex items-center gap-[2px] leading-none">
             <span className="text-xl font-bold group-hover:text-primary transition-colors">
               Bölen Otomotiv
             </span>
-            <div className="relative h-8 w-20 md:h-9 md:w-24">
+            <div className="relative h-10 w-[88px] md:h-11 md:w-[104px] -ml-4 overflow-hidden">
               <Image
-                src="/anniversary.png"
+                src="/anniversary-2025.png"
                 alt="1. Yıl"
                 fill
-                sizes="96px"
-                className="object-contain"
+                sizes="88px"
+                className="object-contain -translate-x-2"
                 priority={false}
               />
             </div>
@@ -63,8 +74,38 @@ export function Header() {
           ))}
         </nav>
 
+        {/* Header Banner */}
+        <div className="hidden lg:flex flex-1 justify-end">
+          <div
+            className="relative h-16 flex-1 max-w-[380px] overflow-hidden shadow-[0_10px_35px_rgba(0,0,0,0.15)] rounded-l-[999px] rounded-r-[22px]"
+            style={{
+              backgroundImage: "url('/araba.png')",
+              backgroundSize: 'cover',
+              backgroundPosition: '90% center',
+              clipPath: 'path(\"M0% 0% L100% 0% L100% 100% L35% 100% Q5% 85% 0% 60% Z\")',
+              WebkitClipPath: 'path(\"M0% 0% L100% 0% L100% 100% L35% 100% Q5% 85% 0% 60% Z\")',
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-l from-black/20 via-black/5 to-transparent" />
+
+            {/* Overlay Icons */}
+            <div className="absolute inset-y-0 right-4 flex items-center gap-3 text-white">
+              <Link href="/favorilerim">
+                <Button variant="ghost" size="icon" className="text-white hover:text-white/80 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full">
+                  <Heart className="h-5 w-5" />
+                </Button>
+              </Link>
+              <Link href="/karsilastir">
+                <Button variant="ghost" size="icon" className="text-white hover:text-white/80 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full">
+                  <Search className="h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+
         {/* Action Buttons */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 lg:hidden">
           <Link href="/favorilerim">
             <Button variant="ghost" size="icon" className="relative">
               <Heart className="h-5 w-5" />

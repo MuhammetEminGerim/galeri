@@ -54,7 +54,8 @@ export function CarCard({ car, showCompare = true }: CarCardProps) {
               src={car.images[0]}
               alt={`${car.brand} ${car.model}`}
               fill
-              className="object-cover transition-transform group-hover:scale-105"
+              className={`object-cover transition-transform group-hover:scale-105 ${car.status === 'sold' ? 'grayscale' : ''
+                }`}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
@@ -62,7 +63,15 @@ export function CarCard({ car, showCompare = true }: CarCardProps) {
               <span className="text-muted-foreground">Resim Yok</span>
             </div>
           )}
-          
+
+          {car.status === 'sold' && (
+            <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/10">
+              <div className="bg-red-600/90 text-white px-8 py-2 transform -rotate-12 border-4 border-white shadow-xl">
+                <span className="text-2xl font-black tracking-widest">SATILDI</span>
+              </div>
+            </div>
+          )}
+
           {car.featured && (
             <Badge className="absolute top-2 left-2" variant="default">
               Öne Çıkan
@@ -120,7 +129,7 @@ export function CarCard({ car, showCompare = true }: CarCardProps) {
             <MessageCircle className="h-4 w-4 mr-1" />
             WhatsApp
           </Button>
-          
+
           {showCompare && (
             <div className="flex items-center gap-2 px-3 !border !border-gray-500 dark:!border-gray-600 rounded-md">
               <Checkbox

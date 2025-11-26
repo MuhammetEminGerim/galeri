@@ -25,7 +25,7 @@ export const SORT_OPTIONS = [
 
 export const CONTACT_INFO = {
   phone: '+90 545 214 13 08',
-  email: 'info@bolenotomotiv.com',
+  email: 'bolenotomotiv14@gmail.com',
   address: 'Alpağut, İzzet Baysal Devlet Hst. Blv. no:177 D:1, 14100 Bolu Merkez/Bolu',
   whatsapp: '+905452141308',
 } as const;

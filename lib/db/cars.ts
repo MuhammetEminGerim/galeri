@@ -32,6 +32,7 @@ const firestoreTocar = (id: string, data: Record<string, unknown>): Car => ({
   images: (data.images as string[]) || [],
   status: (data.status as Car['status']) || 'available',
   featured: Boolean(data.featured),
+  soldAt: (data.soldAt as Timestamp)?.toDate(),
   createdAt: (data.createdAt as Timestamp)?.toDate() || new Date(),
   updatedAt: (data.updatedAt as Timestamp)?.toDate() || new Date(),
 });
@@ -74,8 +75,14 @@ export async function getFilteredCars(filters: FilterOptions): Promise<Car[]> {
     const carsRef = collection(db, CARS_COLLECTION);
     let q = query(carsRef);
 
-    // Sadece satışta olanları göster
-    q = query(q, where('status', '==', 'available'));
+    // Status filtresi: Hem available hem de son 30 günde satılmış olanları getir
+    // Firestore'da OR sorgusu olmadığı için client-side filtreleme yapacağız veya
+    // status filtresini kaldırıp hepsini çekip filtreleyeceğiz.
+    // Performans için şimdilik hepsini çekip filtreleyelim (veri az olduğu varsayımıyla)
+    // İleride 'in' operatörü ile status in ['available', 'sold'] yapılabilir.
+
+    // q = query(q, where('status', 'in', ['available', 'sold'])); 
+    // Not: 'in' operatörü için index gerekebilir, şimdilik client side yapalım.
 
     if (filters.brand) {
       q = query(q, where('brand', '==', filters.brand));
@@ -91,6 +98,19 @@ export async function getFilteredCars(filters: FilterOptions): Promise<Car[]> {
 
     const snapshot = await getDocs(q);
     let cars = snapshot.docs.map((doc) => firestoreTocar(doc.id, doc.data()));
+
+    // Status ve Tarih Filtrelemesi
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    cars = cars.filter((car) => {
+      if (car.status === 'available') return true;
+      if (car.status === 'sold') {
+        const saleDate = car.soldAt || car.updatedAt;
+        return saleDate >= thirtyDaysAgo;
+      }
+      return false;
+    });
 
     // Client-side filtering (Firestore range queries için)
     if (filters.minYear) {

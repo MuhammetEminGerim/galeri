@@ -12,6 +12,7 @@ export interface Car {
   images: string[];
   status: 'available' | 'sold' | 'reserved';
   featured: boolean;
+  soldAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
