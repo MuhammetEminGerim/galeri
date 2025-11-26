@@ -50,7 +50,7 @@ export function CustomerGalleryDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-6xl w-full bg-transparent border-none text-white p-0 overflow-hidden shadow-2xl" showCloseButton={false}>
+      <DialogContent className="sm:max-w-6xl w-[95vw] sm:w-full bg-transparent border-none text-white p-0 overflow-hidden shadow-2xl" showCloseButton={false}>
         {/* Blurred Background with Smooth Transition */}
         <div className="absolute inset-0 z-0 bg-black">
           <AnimatePresence mode="popLayout">
@@ -75,10 +75,10 @@ export function CustomerGalleryDialog({
           </AnimatePresence>
         </div>
 
-        <DialogHeader className="p-6 absolute z-20 top-0 left-0 w-full bg-gradient-to-b from-black/60 to-transparent flex flex-row items-start justify-between">
+        <DialogHeader className="p-4 sm:p-6 absolute z-20 top-0 left-0 w-full bg-gradient-to-b from-black/60 to-transparent flex flex-row items-start justify-between">
           <div>
-            <DialogTitle className="text-2xl font-bold text-white drop-shadow-md">Mutlu Müşterilerimiz</DialogTitle>
-            <DialogDescription className="text-gray-100 drop-shadow-md">
+            <DialogTitle className="text-xl sm:text-2xl font-bold text-white drop-shadow-md">Mutlu Müşterilerimiz</DialogTitle>
+            <DialogDescription className="text-xs sm:text-sm text-gray-100 drop-shadow-md">
               Bizi tercih eden değerli müşterilerimizden kareler.
             </DialogDescription>
           </div>
@@ -88,7 +88,7 @@ export function CustomerGalleryDialog({
           </DialogClose>
         </DialogHeader>
 
-        <div className="w-full h-[90vh] flex items-center justify-center p-0 relative z-10">
+        <div className="w-full h-[80dvh] sm:h-[90vh] flex items-center justify-center p-0 relative z-10">
           <Carousel
             setApi={setApi}
             opts={{
@@ -100,7 +100,7 @@ export function CustomerGalleryDialog({
             <CarouselContent className="h-full">
               {images.map((src, index) => (
                 <CarouselItem key={index} className="h-full flex items-center justify-center">
-                  <div className="w-full h-full flex items-center justify-center">
+                  <div className="w-full h-full flex items-center justify-center p-2 sm:p-0">
                     <Card className="bg-transparent border-none shadow-none w-full h-full">
                       <CardContent className="flex items-center justify-center p-0 relative w-full h-full">
                         <div className="relative w-full h-full">
@@ -119,8 +119,8 @@ export function CustomerGalleryDialog({
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="left-4 bg-white/10 hover:bg-white/20 border-none text-white" />
-            <CarouselNext className="right-4 bg-white/10 hover:bg-white/20 border-none text-white" />
+            <CarouselPrevious className="left-2 sm:left-4 bg-white/10 hover:bg-white/20 border-none text-white h-8 w-8 sm:h-10 sm:w-10" />
+            <CarouselNext className="right-2 sm:right-4 bg-white/10 hover:bg-white/20 border-none text-white h-8 w-8 sm:h-10 sm:w-10" />
           </Carousel>
         </div>
       </DialogContent>
