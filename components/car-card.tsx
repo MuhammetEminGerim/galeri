@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Car } from '@/types/car';
@@ -15,6 +15,7 @@ import { CONTACT_INFO } from '@/lib/constants';
 import { toast } from 'sonner';
 import { Checkbox } from './ui/checkbox';
 import { cn } from '@/lib/utils';
+import useEmblaCarousel from 'embla-carousel-react';
 
 interface CarCardProps {
   car: Car;
@@ -24,8 +25,38 @@ interface CarCardProps {
 export function CarCard({ car, showCompare = true }: CarCardProps) {
   const { toggleFavorite, isFavorite } = useFavorites();
   const { toggleCompare, isInCompare, canAddMore } = useCompare();
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    const onSelect = () => {
+      setCurrentSlide(emblaApi.selectedScrollSnap());
+    };
+
+    emblaApi.on('select', onSelect);
+    return () => {
+      emblaApi.off('select', onSelect);
+    };
+  }, [emblaApi]);
+
+  const scrollPrev = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
+
+  const scrollTo = useCallback((index: number) => {
+    if (emblaApi) emblaApi.scrollTo(index);
+  }, [emblaApi]);
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -51,59 +82,50 @@ export function CarCard({ car, showCompare = true }: CarCardProps) {
     window.open(link, '_blank');
   };
 
-  const nextImage = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (car.images && car.images.length > 0) {
-      setCurrentImageIndex((prev) => (prev + 1) % car.images.length);
-    }
-  };
-
-  const prevImage = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (car.images && car.images.length > 0) {
-      setCurrentImageIndex((prev) => (prev - 1 + car.images.length) % car.images.length);
-    }
-  };
-
-  const handleDotClick = (e: React.MouseEvent, index: number) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setCurrentImageIndex(index);
-  };
-
   return (
     <Card
       className="group overflow-hidden !border !border-gray-500 dark:!border-gray-600 !shadow-[0_2px_8px_rgba(0,0,0,0.15)] dark:!shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:!shadow-[0_4px_12px_rgba(0,0,0,0.2)] dark:hover:!shadow-[0_4px_12px_rgba(0,0,0,0.5)] transition-all duration-300"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-gray-900">
-        <Link href={`/araclar/${car.id}`} className="block w-full h-full">
-          {car.images && car.images.length > 0 ? (
-            <Image
-              src={car.images[currentImageIndex]}
-              alt={`${car.brand} ${car.model}`}
-              fill
-              className={`object-cover object-center transition-transform duration-500 ${isHovered ? 'scale-105' : 'scale-100'} ${car.status === 'sold' ? 'grayscale' : ''}`}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              priority={currentImageIndex === 0}
-            />
-          ) : (
-            <div className="flex items-center justify-center h-full bg-gray-100 dark:bg-gray-800">
-              <span className="text-muted-foreground">Resim Yok</span>
-            </div>
-          )}
-        </Link>
+      <div className="relative aspect-[4/3] bg-gray-900">
+        {/* Carousel Area */}
+        <div className="overflow-hidden h-full" ref={emblaRef}>
+          <div className="flex h-full touch-pan-y">
+            {car.images && car.images.length > 0 ? (
+              car.images.map((image, index) => (
+                <div className="flex-[0_0_100%] min-w-0 relative h-full" key={index}>
+                  <Link href={`/araclar/${car.id}`} className="block w-full h-full relative">
+                    <Image
+                      src={image}
+                      alt={`${car.brand} ${car.model} - ${index + 1}`}
+                      fill
+                      className={`object-cover object-center transition-transform duration-500 ${isHovered ? 'scale-105' : 'scale-100'} ${car.status === 'sold' ? 'grayscale' : ''}`}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      priority={index === 0}
+                    />
+                  </Link>
+                </div>
+              ))
+            ) : (
+              <div className="flex-[0_0_100%] min-w-0 relative h-full">
+                <Link href={`/araclar/${car.id}`} className="block w-full h-full">
+                  <div className="flex items-center justify-center h-full bg-gray-100 dark:bg-gray-800">
+                    <span className="text-muted-foreground">Resim Yok</span>
+                  </div>
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
 
-        {/* Navigation Arrows */}
+        {/* Navigation Arrows (Desktop Only) */}
         {car.images && car.images.length > 1 && (
           <>
             <button
-              onClick={prevImage}
+              onClick={scrollPrev}
               className={cn(
-                "absolute left-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-black/50 text-white hover:bg-black/70 transition-all duration-200 opacity-0 group-hover:opacity-100 z-10",
+                "hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-black/50 text-white hover:bg-black/70 transition-all duration-200 opacity-0 group-hover:opacity-100 z-10 items-center justify-center",
                 "focus:outline-none focus:ring-2 focus:ring-white/50"
               )}
               aria-label="Önceki resim"
@@ -111,9 +133,9 @@ export function CarCard({ car, showCompare = true }: CarCardProps) {
               <ChevronLeft className="h-5 w-5" />
             </button>
             <button
-              onClick={nextImage}
+              onClick={scrollNext}
               className={cn(
-                "absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-black/50 text-white hover:bg-black/70 transition-all duration-200 opacity-0 group-hover:opacity-100 z-10",
+                "hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-black/50 text-white hover:bg-black/70 transition-all duration-200 opacity-0 group-hover:opacity-100 z-10 items-center justify-center",
                 "focus:outline-none focus:ring-2 focus:ring-white/50"
               )}
               aria-label="Sonraki resim"
@@ -122,14 +144,18 @@ export function CarCard({ car, showCompare = true }: CarCardProps) {
             </button>
 
             {/* Dots Indicator */}
-            <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10 px-4">
+            <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10 px-4 pointer-events-none">
               {car.images.slice(0, 5).map((_, idx) => (
                 <button
                   key={idx}
-                  onClick={(e) => handleDotClick(e, idx)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    scrollTo(idx);
+                  }}
                   className={cn(
-                    "w-1.5 h-1.5 rounded-full transition-all duration-300 shadow-sm",
-                    currentImageIndex === idx
+                    "w-1.5 h-1.5 rounded-full transition-all duration-300 shadow-sm pointer-events-auto",
+                    currentSlide === idx
                       ? "bg-white w-3"
                       : "bg-white/50 hover:bg-white/80"
                   )}
