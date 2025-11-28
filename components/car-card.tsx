@@ -90,17 +90,17 @@ export function CarCard({ car, showCompare = true }: CarCardProps) {
     >
       <div className="relative aspect-[4/3] bg-gray-900">
         {/* Carousel Area */}
-        <div className="overflow-hidden h-full" ref={emblaRef}>
-          <div className="flex h-full touch-pan-y">
+        <div className="overflow-hidden h-full w-full" ref={emblaRef}>
+          <div className="flex h-full touch-pan-y -ml-[1px]"> {/* Negative margin hack to prevent sub-pixel bleeding */}
             {car.images && car.images.length > 0 ? (
               car.images.map((image, index) => (
-                <div className="flex-[0_0_100%] min-w-0 relative h-full" key={index}>
-                  <Link href={`/araclar/${car.id}`} className="block w-full h-full relative">
+                <div className="flex-[0_0_100%] min-w-0 relative h-full pl-[1px]" key={index}> {/* Padding to compensate */}
+                  <Link href={`/araclar/${car.id}`} className="block w-full h-full relative overflow-hidden">
                     <Image
                       src={image}
                       alt={`${car.brand} ${car.model} - ${index + 1}`}
                       fill
-                      className={`object-cover object-center transition-transform duration-500 ${isHovered ? 'scale-105' : 'scale-100'} ${car.status === 'sold' ? 'grayscale' : ''}`}
+                      className={`object-cover object-center transition-transform duration-500 ${isHovered ? 'scale-110' : 'scale-100'} ${car.status === 'sold' ? 'grayscale' : ''}`}
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       priority={index === 0}
                     />
