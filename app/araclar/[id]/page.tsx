@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { getCarById } from '@/lib/db/cars';
 import { ImageGallery } from '@/components/image-gallery';
+import { ShareButtons } from '@/components/share-buttons';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -166,26 +167,10 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
           {/* Share */}
           <div>
             <h3 className="font-semibold mb-3">Paylaş</h3>
-            <div className="grid grid-cols-3 gap-3">
-              <a href={shareLinks.whatsapp} target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" className="w-full flex flex-col items-center gap-2 h-auto py-4 hover:bg-[#25D366]/10 hover:text-[#25D366] hover:border-[#25D366]">
-                  <MessageCircle className="h-6 w-6" />
-                  <span className="text-xs">WhatsApp</span>
-                </Button>
-              </a>
-              <a href="https://www.instagram.com/create/story" target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" className="w-full flex flex-col items-center gap-2 h-auto py-4 hover:bg-[#E1306C]/10 hover:text-[#E1306C] hover:border-[#E1306C]">
-                  <Instagram className="h-6 w-6" />
-                  <span className="text-xs">Story</span>
-                </Button>
-              </a>
-              <a href="https://ig.me/m/bolenotomotiv" target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" className="w-full flex flex-col items-center gap-2 h-auto py-4 hover:bg-[#E1306C]/10 hover:text-[#E1306C] hover:border-[#E1306C]">
-                  <Send className="h-6 w-6" />
-                  <span className="text-xs">DM</span>
-                </Button>
-              </a>
-            </div>
+            <ShareButtons
+              carTitle={`${car.brand} ${car.model} (${car.year})`}
+              shareUrl={`https://autogaleri.com/araclar/${car.id}`}
+            />
           </div>
         </div>
       </div>
