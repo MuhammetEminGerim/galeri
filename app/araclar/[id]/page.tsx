@@ -13,6 +13,8 @@ import {
   Share2,
   Phone,
   Mail,
+  Instagram,
+  Send,
 } from 'lucide-react';
 import { formatPrice, formatKm, formatDate, createWhatsAppLink, getShareLinks } from '@/lib/utils/formatters';
 import { CAR_STATUS, CONTACT_INFO } from '@/lib/constants';
@@ -26,7 +28,7 @@ interface CarDetailPageProps {
 export async function generateMetadata({ params }: CarDetailPageProps): Promise<Metadata> {
   const { id } = await params;
   const car = await getCarById(id);
-  
+
   if (!car) {
     return {
       title: 'Araç Bulunamadı',
@@ -138,9 +140,9 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
           <Separator />
 
           {/* Contact Buttons */}
-          <div className="space-y-3">
+          <div className="space-y-6">
             <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-              <Button className="w-full" size="lg">
+              <Button className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white" size="lg">
                 <MessageCircle className="h-5 w-5 mr-2" />
                 WhatsApp ile İletişime Geç
               </Button>
@@ -164,20 +166,23 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
           {/* Share */}
           <div>
             <h3 className="font-semibold mb-3">Paylaş</h3>
-            <div className="flex gap-2">
-              <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" size="icon">
-                  <Share2 className="h-4 w-4" />
-                </Button>
-              </a>
-              <a href={shareLinks.twitter} target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" size="icon">
-                  <Share2 className="h-4 w-4" />
-                </Button>
-              </a>
+            <div className="grid grid-cols-3 gap-3">
               <a href={shareLinks.whatsapp} target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" size="icon">
-                  <MessageCircle className="h-4 w-4" />
+                <Button variant="outline" className="w-full flex flex-col items-center gap-2 h-auto py-4 hover:bg-[#25D366]/10 hover:text-[#25D366] hover:border-[#25D366]">
+                  <MessageCircle className="h-6 w-6" />
+                  <span className="text-xs">WhatsApp</span>
+                </Button>
+              </a>
+              <a href="https://www.instagram.com/create/story" target="_blank" rel="noopener noreferrer">
+                <Button variant="outline" className="w-full flex flex-col items-center gap-2 h-auto py-4 hover:bg-[#E1306C]/10 hover:text-[#E1306C] hover:border-[#E1306C]">
+                  <Instagram className="h-6 w-6" />
+                  <span className="text-xs">Story</span>
+                </Button>
+              </a>
+              <a href="https://ig.me/m/bolenotomotiv" target="_blank" rel="noopener noreferrer">
+                <Button variant="outline" className="w-full flex flex-col items-center gap-2 h-auto py-4 hover:bg-[#E1306C]/10 hover:text-[#E1306C] hover:border-[#E1306C]">
+                  <Send className="h-6 w-6" />
+                  <span className="text-xs">DM</span>
                 </Button>
               </a>
             </div>
