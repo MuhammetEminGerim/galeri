@@ -141,21 +141,21 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
           <Separator />
 
           {/* Contact Buttons */}
-          <div className="space-y-6">
+          <div className="flex flex-col gap-4">
             <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-              <Button className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white" size="lg">
+              <Button className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white h-12 rounded-xl text-base shadow-sm hover:shadow-md transition-all duration-300" size="lg">
                 <MessageCircle className="h-5 w-5 mr-2" />
                 WhatsApp ile İletişime Geç
               </Button>
             </a>
             <a href={`tel:${CONTACT_INFO.phone}`}>
-              <Button variant="outline" className="w-full" size="lg">
+              <Button variant="outline" className="w-full h-12 rounded-xl text-base border-gray-300 hover:border-gray-400 hover:bg-gray-50 shadow-sm hover:shadow-md transition-all duration-300" size="lg">
                 <Phone className="h-5 w-5 mr-2" />
                 Telefon ile Ara
               </Button>
             </a>
             <Link href="/iletisim">
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full h-12 rounded-xl text-base border-gray-300 hover:border-gray-400 hover:bg-gray-50 shadow-sm hover:shadow-md transition-all duration-300">
                 <Mail className="h-5 w-5 mr-2" />
                 Mesaj Gönder
               </Button>
