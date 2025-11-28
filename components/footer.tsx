@@ -24,7 +24,7 @@ export function Footer() {
               <span className="text-xl font-bold group-hover:text-primary transition-colors">Bölen Otomotiv</span>
             </Link>
             <p className="text-sm text-muted-foreground">
-              Güvenilir ve kaliteli araçlar için doğru adres. Hayalinizdeki aracı bulmanız için buradayız.
+              10 yıllık tecrübemiz ve yeni yüzümüzle<br />size en uygun aracı bulmak için buradayız
             </p>
             <div className="flex space-x-4">
               <a
