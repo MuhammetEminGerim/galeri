@@ -10,11 +10,23 @@ import { Button } from '@/components/ui/button';
 import { SlidersHorizontal, LayoutGrid, LayoutList } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
-export default function AraclarPage() {
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+
+function AraclarContent() {
+  const searchParams = useSearchParams();
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<FilterOptions>({});
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
+  // Initialize filters from URL on mount
+  useEffect(() => {
+    const fuelType = searchParams.get('fuelType');
+    if (fuelType) {
+      setFilters(prev => ({ ...prev, fuelType }));
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     async function loadCars() {
@@ -120,5 +132,13 @@ export default function AraclarPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AraclarPage() {
+  return (
+    <Suspense fallback={<div className="container mx-auto px-4 py-8">Yükleniyor...</div>}>
+      <AraclarContent />
+    </Suspense>
   );
 }
