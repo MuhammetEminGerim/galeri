@@ -19,6 +19,7 @@ import { uploadMultipleImages } from '@/lib/db/storage';
 import { toast } from 'sonner';
 import { Upload, X, Loader2, Image as ImageIcon, Info, Settings, FileText, Star, PlusCircle } from 'lucide-react';
 import Image from 'next/image';
+import { compressImage } from '@/lib/image-compression';
 
 const carSchema = z.object({
   brand: z.string().min(1, 'Marka gerekli'),
@@ -64,10 +65,25 @@ export function CarForm({ car, isEdit = false }: CarFormProps) {
     },
   });
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
-      setImageFiles((prev) => [...prev, ...files]);
+
+      // Show loading toast
+      const loadingToast = toast.loading('Resimler sıkıştırılıyor...');
+
+      try {
+        const compressedFilesPromises = files.map(file => compressImage(file));
+        const compressedFiles = await Promise.all(compressedFilesPromises);
+
+        setImageFiles((prev) => [...prev, ...compressedFiles]);
+        toast.dismiss(loadingToast);
+        toast.success(`${files.length} resim hazırlandı.`);
+      } catch (error) {
+        console.error('Error compressing images:', error);
+        toast.dismiss(loadingToast);
+        toast.error('Resimler işlenirken bir hata oluştu.');
+      }
     }
   };
 
@@ -482,8 +498,8 @@ export function CarForm({ car, isEdit = false }: CarFormProps) {
               render={({ field }) => (
                 <FormItem className="flex flex-row items-start space-x-4 space-y-0">
                   <FormControl>
-                    <Checkbox 
-                      checked={field.value} 
+                    <Checkbox
+                      checked={field.value}
                       onCheckedChange={field.onChange}
                       className="mt-1 data-[state=checked]:bg-amber-500 data-[state=checked]:border-amber-500"
                     />
@@ -505,9 +521,9 @@ export function CarForm({ car, isEdit = false }: CarFormProps) {
 
         {/* Submit Buttons */}
         <div className="flex gap-4 pt-4">
-          <Button 
-            type="submit" 
-            size="lg" 
+          <Button
+            type="submit"
+            size="lg"
             disabled={isSubmitting}
             className="flex-1 md:flex-none md:min-w-[200px] bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 shadow-lg hover:shadow-xl transition-all"
           >
@@ -538,4 +554,3 @@ export function CarForm({ car, isEdit = false }: CarFormProps) {
     </Form>
   );
 }
-
