@@ -1,23 +1,25 @@
-// Client-side storage utilities using API routes
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { storage } from '../firebase';
 
 // Resim yükle
 export async function uploadCarImage(file: File, carId: string): Promise<string> {
   try {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('carId', carId);
+    // Create a unique filename
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(2, 8);
+    const extension = file.name.split('.').pop();
+    const filename = `${timestamp}-${random}.${extension}`;
 
-    const response = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
-    });
+    // Create a reference to the file location
+    const storageRef = ref(storage, `cars/${carId}/${filename}`);
 
-    if (!response.ok) {
-      throw new Error('Failed to upload image');
-    }
+    // Upload the file
+    const snapshot = await uploadBytes(storageRef, file);
 
-    const data = await response.json();
-    return data.url;
+    // Get the download URL
+    const downloadURL = await getDownloadURL(snapshot.ref);
+
+    return downloadURL;
   } catch (error) {
     console.error('Error uploading image:', error);
     throw error;
@@ -38,13 +40,11 @@ export async function uploadMultipleImages(files: File[], carId: string): Promis
 // Resim sil
 export async function deleteCarImage(imageUrl: string): Promise<void> {
   try {
-    const response = await fetch(`/api/upload?url=${encodeURIComponent(imageUrl)}`, {
-      method: 'DELETE',
-    });
+    // Create a reference from the URL
+    const storageRef = ref(storage, imageUrl);
 
-    if (!response.ok) {
-      throw new Error('Failed to delete image');
-    }
+    // Delete the file
+    await deleteObject(storageRef);
   } catch (error) {
     console.error('Error deleting image:', error);
     throw error;
