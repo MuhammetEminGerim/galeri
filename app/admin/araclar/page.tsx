@@ -61,7 +61,7 @@ export default function AdminCarsPage() {
 
   return (
     <AuthGuard>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 pb-24 md:pb-8">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold mb-2">Araçlar</h1>
@@ -69,7 +69,7 @@ export default function AdminCarsPage() {
               {loading ? 'Yükleniyor...' : `Toplam ${cars.length} araç`}
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="hidden md:flex gap-3">
             <Link href="/admin/araclar/toplu-ekle">
               <Button size="lg" variant="outline" className="!border !border-gray-500 dark:!border-gray-600">
                 <Upload className="h-4 w-4 mr-2" />
@@ -104,33 +104,32 @@ export default function AdminCarsPage() {
         ) : (
           <div className="space-y-4">
             {cars.map((car) => (
-              <div key={car.id} className="!border !border-gray-500 dark:!border-gray-600 rounded-lg p-4 !shadow-[0_2px_8px_rgba(0,0,0,0.15)] dark:!shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:!shadow-[0_4px_12px_rgba(0,0,0,0.2)] dark:hover:!shadow-[0_4px_12px_rgba(0,0,0,0.5)] transition-all">
+              <div key={car.id} className="!border !border-gray-500 dark:!border-gray-600 rounded-lg p-4 !shadow-[0_2px_8px_rgba(0,0,0,0.15)] dark:!shadow-[0_2px_8px_rgba(0,0,0,0.4)] hover:!shadow-[0_4px_12px_rgba(0,0,0,0.2)] dark:hover:!shadow-[0_4px_12px_rgba(0,0,0,0.5)] transition-all bg-card">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
                       <h3 className="text-lg font-semibold">
                         {car.brand} {car.model}
                       </h3>
                       <Badge variant={car.status === 'available' ? 'default' : 'secondary'}>
                         {CAR_STATUS[car.status]}
                       </Badge>
-                      {car.featured && <Badge>Öne Çıkan</Badge>}
+                      {car.featured && <Badge variant="outline" className="border-amber-500 text-amber-500">Öne Çıkan</Badge>}
                     </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm text-muted-foreground">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-1 text-sm text-muted-foreground mb-3 md:mb-0">
                       <span>Yıl: {car.year}</span>
                       <span>Km: {formatKm(car.km)}</span>
                       <span>{car.fuelType}</span>
                       <span>{car.transmissionType}</span>
                     </div>
-                    <p className="text-lg font-bold text-primary mt-2">{formatPrice(car.price)}</p>
+                    <p className="text-lg font-bold text-primary mt-1">{formatPrice(car.price)}</p>
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="flex items-center justify-end gap-2 pt-2 border-t md:border-t-0 md:pt-0 border-border">
                     <Button
-                      variant="outline"
+                      variant="ghost"
                       size="icon"
-                      className={`!border !border-gray-500 dark:!border-gray-600 ${car.featured ? 'text-amber-500 hover:text-amber-600' : 'text-gray-400 hover:text-amber-500'
-                        }`}
+                      className={`h-10 w-10 ${car.featured ? 'text-amber-500 hover:text-amber-600 hover:bg-amber-100 dark:hover:bg-amber-900/20' : 'text-gray-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/10'}`}
                       onClick={async () => {
                         try {
                           await updateCar(car.id, { featured: !car.featured });
@@ -142,24 +141,25 @@ export default function AdminCarsPage() {
                         }
                       }}
                     >
-                      <Star className={`h-4 w-4 ${car.featured ? 'fill-current' : ''}`} />
+                      <Star className={`h-5 w-5 ${car.featured ? 'fill-current' : ''}`} />
                     </Button>
                     <Link href={`/araclar/${car.id}`} target="_blank">
-                      <Button variant="outline" size="icon" className="!border !border-gray-500 dark:!border-gray-600">
-                        <Eye className="h-4 w-4" />
+                      <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-blue-50 dark:hover:bg-blue-900/10 hover:text-blue-600">
+                        <Eye className="h-5 w-5" />
                       </Button>
                     </Link>
                     <Link href={`/admin/araclar/${car.id}`}>
-                      <Button variant="outline" size="icon" className="!border !border-gray-500 dark:!border-gray-600">
-                        <Pencil className="h-4 w-4" />
+                      <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-green-50 dark:hover:bg-green-900/10 hover:text-green-600">
+                        <Pencil className="h-5 w-5" />
                       </Button>
                     </Link>
                     <Button
-                      variant="destructive"
+                      variant="ghost"
                       size="icon"
+                      className="h-10 w-10 hover:bg-red-50 dark:hover:bg-red-900/10 hover:text-red-600"
                       onClick={() => setDeleteCarId(car.id)}
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-5 w-5" />
                     </Button>
                   </div>
                 </div>
@@ -167,6 +167,13 @@ export default function AdminCarsPage() {
             ))}
           </div>
         )}
+
+        {/* Mobile Floating Action Button */}
+        <Link href="/admin/araclar/yeni" className="md:hidden fixed bottom-6 right-6 z-50">
+          <Button size="icon" className="h-14 w-14 rounded-full shadow-xl bg-primary hover:bg-primary/90 transition-transform active:scale-95">
+            <Plus className="h-8 w-8 text-primary-foreground" />
+          </Button>
+        </Link>
       </div>
 
       <AlertDialog open={!!deleteCarId} onOpenChange={(open) => !open && setDeleteCarId(null)}>
