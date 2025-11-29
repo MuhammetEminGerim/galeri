@@ -69,6 +69,37 @@ export async function getFeaturedCars(): Promise<Car[]> {
   }
 }
 
+// Satılan araçları getir
+export async function getSoldCars(): Promise<Car[]> {
+  try {
+    const carsRef = collection(db, CARS_COLLECTION);
+    const q = query(
+      carsRef,
+      where('status', '==', 'sold'),
+      orderBy('soldAt', 'desc'),
+      limit(20)
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => firestoreTocar(doc.id, doc.data()));
+  } catch (error) {
+    console.error('Error getting sold cars:', error);
+    try {
+      const carsRef = collection(db, CARS_COLLECTION);
+      const q = query(
+        carsRef,
+        where('status', '==', 'sold'),
+        orderBy('updatedAt', 'desc'),
+        limit(20)
+      );
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map((doc) => firestoreTocar(doc.id, doc.data()));
+    } catch (retryError) {
+      console.error('Retry error getting sold cars:', retryError);
+      return [];
+    }
+  }
+}
+
 // Filtreleme ile araç getir
 export async function getFilteredCars(filters: FilterOptions): Promise<Car[]> {
   try {

@@ -6,13 +6,16 @@ import { Button } from './ui/button';
 import { ArrowRight, Users, Calendar, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { CustomerGalleryDialog } from './customer-gallery-dialog';
+import { SoldCarsDialog } from './sold-cars-dialog';
 
 export function HeroSection() {
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const [soldCarsOpen, setSoldCarsOpen] = useState(false);
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-background dark:from-slate-900 dark:via-blue-950/20 dark:to-background py-24 md:py-36">
       <CustomerGalleryDialog open={galleryOpen} onOpenChange={setGalleryOpen} />
+      <SoldCarsDialog open={soldCarsOpen} onOpenChange={setSoldCarsOpen} />
 
       <div className="container mx-auto px-4">
         <motion.div
@@ -45,7 +48,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="flex flex-wrap justify-center gap-8 mt-24 max-w-5xl mx-auto"
+          className="flex flex-wrap justify-center gap-8 mt-24 max-w-6xl mx-auto"
         >
           {[
             {
@@ -53,6 +56,13 @@ export function HeroSection() {
               value: '100+',
               gradient: 'from-violet-500 to-purple-500',
               onClick: () => setGalleryOpen(true),
+              className: 'cursor-pointer hover:scale-105 active:scale-95',
+            },
+            {
+              label: 'Satılan Araç',
+              value: '500+',
+              gradient: 'from-rose-500 to-pink-500',
+              onClick: () => setSoldCarsOpen(true),
               className: 'cursor-pointer hover:scale-105 active:scale-95',
             },
             {
