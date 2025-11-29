@@ -1,0 +1,34 @@
+name: Siteyi Yayina Al
+
+on:
+  push:
+    branches:
+      - master  # <-- Bak burayı senin için 'master' yaptım, artık çalışır.
+
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚚 Kodlari Al
+      uses: actions/checkout@v4
+
+    - name: 🟢 Node.js Kur
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: 📦 Paketleri Yükle
+      run: npm ci
+
+    - name: 🏗️ Siteyi İnşa Et (Build)
+      run: npm run build
+
+    - name: 📂 Dosyalari cPanel'e Gönder
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./out/
+        server-dir: ./
