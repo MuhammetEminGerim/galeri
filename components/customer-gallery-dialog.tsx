@@ -51,29 +51,8 @@ export function CustomerGalleryDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-6xl w-[95vw] h-[80vh] sm:w-full sm:h-auto bg-transparent border-none text-white p-0 overflow-hidden shadow-2xl" showCloseButton={false}>
-        {/* Blurred Background with Smooth Transition */}
-        <div className="absolute inset-0 z-0 bg-black">
-          <AnimatePresence mode="popLayout">
-            {images[current] && (
-              <motion.div
-                key={current}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
-                className="absolute inset-0"
-              >
-                <Image
-                  src={images[current]}
-                  alt="Background"
-                  fill
-                  className="object-cover blur-xl scale-110"
-                  priority
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+        {/* Static Dark Background */}
+        <div className="absolute inset-0 z-0 bg-zinc-950" />
 
         <DialogHeader className="p-4 sm:p-6 absolute z-20 top-0 left-0 w-full bg-gradient-to-b from-black/60 to-transparent flex flex-row items-start justify-between">
           <div>
@@ -93,7 +72,7 @@ export function CustomerGalleryDialog({
             setApi={setApi}
             opts={{
               loop: true,
-              duration: 40,
+              duration: 60,
             }}
             className="w-full h-full [&_[data-slot=carousel-content]]:h-full"
           >

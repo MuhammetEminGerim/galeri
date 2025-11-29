@@ -69,7 +69,7 @@ export function SoldCarsDialog({
                         ) : (
                             <Carousel
                                 setApi={setApi}
-                                opts={{ loop: true }}
+                                opts={{ loop: true, duration: 60 }}
                                 className="w-full"
                             >
                                 <CarouselContent>
