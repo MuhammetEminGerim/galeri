@@ -24,30 +24,25 @@ jobs:
     - name: 🏗️ Siteyi İnşa Et (Build)
       run: npm run build
       env:
-        # Firebase Ayarları
+        # Firebase ve Cloudinary Ayarları
         NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
         NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
         NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
         NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET }}
         NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
         NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }}
-        
-        # Cloudinary Ayarları
         NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
         NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: ${{ secrets.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET }}
-        
-        # !! EKSİK OLANLARI EKLEDİK !!
         CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
         CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
 
-    - name: 📂 Dosyalari cPanel'e Gönder
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-      with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./out/
-        server-dir: ./
-        protocol: ftp
-        port: 21
-        security: loose
+    - name: 🔨 LFTP Kurulumu
+      run: sudo apt-get update && sudo apt-get install -y lftp
+
+    - name: 📂 Dosyalari Yükle (LFTP ile)
+      run: |
+        lftp -e "set ftp:ssl-allow no; set net:timeout 10; set net:max-retries 3; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER; mirror -R --parallel=2 --verbose ./out ./"
+      env:
+        FTP_SERVER: ${{ secrets.FTP_SERVER }}
+        FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+        FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
