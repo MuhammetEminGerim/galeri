@@ -60,7 +60,7 @@ export function HeroSection() {
             },
             {
               label: 'Satılan Araç',
-              value: '500+',
+              value: '100+',
               gradient: 'from-rose-500 to-pink-500',
               onClick: () => setSoldCarsOpen(true),
               className: 'cursor-pointer hover:scale-105 active:scale-95',
