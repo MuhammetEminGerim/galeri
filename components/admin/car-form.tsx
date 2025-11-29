@@ -108,10 +108,31 @@ export function CarForm({ car, isEdit = false }: CarFormProps) {
         imageUrls = [...imageUrls, ...uploadedUrls];
       }
 
-      const carData = {
+      const carData: any = {
         ...data,
         images: imageUrls,
       };
+
+      // Set soldAt date if status is sold
+      if (data.status === 'sold') {
+        // If it wasn't sold before, set the date
+        if (car?.status !== 'sold') {
+          carData.soldAt = new Date();
+        }
+        // If it was already sold, keep the existing date (it's already in the database, we don't need to send it again unless we want to update it)
+        // But since we are sending the whole object, if we don't include it, it might be lost if we were replacing the doc? 
+        // updateDoc only updates fields provided. 
+        // But wait, we are not passing existing fields from 'car' into 'carData' except what's in 'data'.
+        // 'data' (CarFormData) doesn't have soldAt.
+        // So if we don't add it to carData, updateDoc won't touch it (which is good).
+        // BUT, if this is a NEW car being created as sold, we must add it.
+        if (!car) {
+          carData.soldAt = new Date();
+        }
+      } else {
+        // If status is not sold, remove soldAt
+        carData.soldAt = null;
+      }
 
       if (isEdit && car) {
         await updateCar(car.id, carData);

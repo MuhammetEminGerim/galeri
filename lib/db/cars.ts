@@ -73,30 +73,25 @@ export async function getFeaturedCars(): Promise<Car[]> {
 export async function getSoldCars(): Promise<Car[]> {
   try {
     const carsRef = collection(db, CARS_COLLECTION);
+    // Index hatasından kaçınmak için sadece status filtresi uyguluyoruz
+    // Sıralamayı client-side yapacağız
     const q = query(
       carsRef,
-      where('status', '==', 'sold'),
-      orderBy('soldAt', 'desc'),
-      limit(20)
+      where('status', '==', 'sold')
     );
+
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => firestoreTocar(doc.id, doc.data()));
+    const cars = snapshot.docs.map((doc) => firestoreTocar(doc.id, doc.data()));
+
+    // Client-side sorting
+    return cars.sort((a, b) => {
+      const dateA = a.soldAt || a.updatedAt || new Date(0);
+      const dateB = b.soldAt || b.updatedAt || new Date(0);
+      return dateB.getTime() - dateA.getTime();
+    });
   } catch (error) {
     console.error('Error getting sold cars:', error);
-    try {
-      const carsRef = collection(db, CARS_COLLECTION);
-      const q = query(
-        carsRef,
-        where('status', '==', 'sold'),
-        orderBy('updatedAt', 'desc'),
-        limit(20)
-      );
-      const snapshot = await getDocs(q);
-      return snapshot.docs.map((doc) => firestoreTocar(doc.id, doc.data()));
-    } catch (retryError) {
-      console.error('Retry error getting sold cars:', retryError);
-      return [];
-    }
+    return [];
   }
 }
 
