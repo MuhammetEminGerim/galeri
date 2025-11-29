@@ -1,32 +1,38 @@
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { storage } from '../firebase';
+// Client-side storage utilities for cPanel (Static Export)
+// Note: This uses unsigned Cloudinary uploads since we cannot use server-side API routes on static hosting.
 
-// Resim yükle
 export async function uploadCarImage(file: File, carId: string): Promise<string> {
   try {
-    // Create a unique filename
-    const timestamp = Date.now();
-    const random = Math.random().toString(36).substring(2, 8);
-    const extension = file.name.split('.').pop();
-    const filename = `${timestamp}-${random}.${extension}`;
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'ml_default'; // Fallback or env var
 
-    // Create a reference to the file location
-    const storageRef = ref(storage, `cars/${carId}/${filename}`);
+    if (!cloudName) {
+      throw new Error('Cloudinary Cloud Name is missing');
+    }
 
-    // Upload the file
-    const snapshot = await uploadBytes(storageRef, file);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', uploadPreset);
+    formData.append('folder', `cars/${carId}`);
 
-    // Get the download URL
-    const downloadURL = await getDownloadURL(snapshot.ref);
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      method: 'POST',
+      body: formData,
+    });
 
-    return downloadURL;
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error?.message || 'Failed to upload image');
+    }
+
+    const data = await response.json();
+    return data.secure_url;
   } catch (error) {
     console.error('Error uploading image:', error);
     throw error;
   }
 }
 
-// Çoklu resim yükle
 export async function uploadMultipleImages(files: File[], carId: string): Promise<string[]> {
   try {
     const uploadPromises = files.map((file) => uploadCarImage(file, carId));
@@ -37,16 +43,10 @@ export async function uploadMultipleImages(files: File[], carId: string): Promis
   }
 }
 
-// Resim sil
+// Note: Deleting images directly from client-side without a backend signature is risky/restricted in Cloudinary.
+// For static sites, we usually just remove the reference from Firestore.
+// If strict deletion is needed, it requires a backend function (e.g., Firebase Cloud Functions).
 export async function deleteCarImage(imageUrl: string): Promise<void> {
-  try {
-    // Create a reference from the URL
-    const storageRef = ref(storage, imageUrl);
-
-    // Delete the file
-    await deleteObject(storageRef);
-  } catch (error) {
-    console.error('Error deleting image:', error);
-    throw error;
-  }
+  console.warn('Image deletion from storage is skipped for static export security. Reference removed from DB.');
+  return Promise.resolve();
 }

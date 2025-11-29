@@ -4,7 +4,9 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
   productionBrowserSourceMaps: false,
+  output: 'export',
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
