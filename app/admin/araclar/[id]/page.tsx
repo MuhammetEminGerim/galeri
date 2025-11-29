@@ -1,11 +1,23 @@
 import { notFound } from 'next/navigation';
 import { AuthGuard } from '@/components/admin/auth-guard';
 import { CarForm } from '@/components/admin/car-form';
-import { getCarById } from '@/lib/db/cars';
+import { getCarById, getAllCars } from '@/lib/db/cars';
 import { Edit } from 'lucide-react';
 
 interface EditCarPageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateStaticParams() {
+  try {
+    const cars = await getAllCars();
+    return cars.map((car) => ({
+      id: car.id,
+    }));
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
 }
 
 export default async function EditCarPage({ params }: EditCarPageProps) {

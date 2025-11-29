@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getCarById } from '@/lib/db/cars';
+import { getCarById, getAllCars } from '@/lib/db/cars';
 import { ImageGallery } from '@/components/image-gallery';
 import { ShareButtons } from '@/components/share-buttons';
 import { Button } from '@/components/ui/button';
@@ -11,11 +11,8 @@ import {
   Fuel,
   Palette,
   MessageCircle,
-  Share2,
   Phone,
   Mail,
-  Instagram,
-  Send,
 } from 'lucide-react';
 import { formatPrice, formatKm, formatDate, createWhatsAppLink, getShareLinks } from '@/lib/utils/formatters';
 import { CAR_STATUS, CONTACT_INFO } from '@/lib/constants';
@@ -47,6 +44,18 @@ export async function generateMetadata({ params }: CarDetailPageProps): Promise<
   };
 }
 
+export async function generateStaticParams() {
+  try {
+    const cars = await getAllCars();
+    return cars.map((car) => ({
+      id: car.id,
+    }));
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
+}
+
 export default async function CarDetailPage({ params }: CarDetailPageProps) {
   const { id } = await params;
   const car = await getCarById(id);
@@ -57,10 +66,6 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
 
   const whatsappMessage = `Merhaba, ${car.brand} ${car.model} (${car.year}) hakkında bilgi almak istiyorum.`;
   const whatsappLink = createWhatsAppLink(CONTACT_INFO.whatsapp, whatsappMessage);
-  const shareLinks = getShareLinks(
-    `https://autogaleri.com/araclar/${car.id}`,
-    `${car.brand} ${car.model} (${car.year})`
-  );
 
   return (
     <div className="container mx-auto px-4 py-8">

@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isLoginPage = pathname === '/admin/login';
+  const isLoginPage = pathname?.startsWith('/admin/login');
 
   // Login sayfası için AuthGuard'ı atla
   if (isLoginPage) {

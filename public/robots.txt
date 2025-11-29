@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: https://dynamic-chimera-6ea2ff.netlify.app/sitemap.xml
