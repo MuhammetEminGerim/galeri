@@ -39,10 +39,9 @@ jobs:
     - name: 🔨 LFTP Kurulumu
       run: sudo apt-get update && sudo apt-get install -y lftp
 
-    - name: 📂 Dosyalari Yükle (LFTP ile - Garantili Yöntem)
+    - name: 📂 Dosyalari Yükle (LFTP - Risksiz Yontem)
       run: |
-        cd out
-        lftp -e "set ftp:ssl-allow no; set net:timeout 10; set net:max-retries 3; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER; mirror -R --parallel=2 --verbose --delete . ./"
+        lftp -e "set ftp:ssl-allow no; set net:timeout 10; set net:max-retries 3; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_SERVER; mirror -R --parallel=2 --verbose ./out/. ./"
       env:
         FTP_SERVER: ${{ secrets.FTP_SERVER }}
         FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
