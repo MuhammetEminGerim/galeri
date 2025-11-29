@@ -48,7 +48,7 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="flex flex-wrap justify-center gap-8 mt-24 max-w-6xl mx-auto"
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 max-w-5xl mx-auto"
         >
           {[
             {
@@ -78,16 +78,16 @@ export function HeroSection() {
           ].map((stat, index) => (
             <motion.div
               key={index}
-              className={`relative overflow-hidden text-center p-10 rounded-2xl bg-gradient-to-br from-white/50 to-white/30 dark:from-gray-800/50 dark:to-gray-900/30 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 ${stat.className || ''}`}
+              className={`relative overflow-hidden text-center p-6 rounded-xl bg-gradient-to-br from-white/50 to-white/30 dark:from-gray-800/50 dark:to-gray-900/30 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 ${stat.className || ''}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }}
               onClick={stat.onClick}
             >
-              <div className={`relative z-10 text-5xl md:text-7xl font-bold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent mb-4`}>
+              <div className={`relative z-10 text-3xl md:text-4xl font-bold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent mb-2`}>
                 {stat.value}
               </div>
-              <div className="relative z-10 text-xl font-medium text-muted-foreground">{stat.label}</div>
+              <div className="relative z-10 text-sm font-medium text-muted-foreground">{stat.label}</div>
             </motion.div>
           ))}
         </motion.div>
