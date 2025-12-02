@@ -46,7 +46,7 @@ export function SoldCarsDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-5xl w-[95vw] h-auto bg-zinc-950/95 backdrop-blur-xl border-zinc-800 text-white p-0 overflow-hidden shadow-2xl" showCloseButton={false}>
+            <DialogContent className="sm:max-w-4xl w-[95vw] h-auto bg-zinc-950/95 backdrop-blur-xl border-zinc-800 text-white p-0 overflow-hidden shadow-2xl" showCloseButton={false}>
 
                 <div className="relative w-full h-full flex flex-col">
                     {/* Header */}
@@ -84,11 +84,11 @@ export function SoldCarsDialog({
                                                                     src={car.images[0]}
                                                                     alt={`${car.brand} ${car.model}`}
                                                                     fill
-                                                                    className="object-cover"
+                                                                    className="object-contain bg-zinc-900"
                                                                     priority={index === 0}
                                                                 />
                                                             ) : (
-                                                                <div className="w-full h-full bg-zinc-800 flex items-center justify-center text-zinc-600">Görsel Yok</div>
+                                                                <div className="w-full h-full bg-zinc-900 flex items-center justify-center text-zinc-600">Görsel Yok</div>
                                                             )}
                                                             <div className="absolute top-4 right-4">
                                                                 <Badge className="bg-white/90 text-black hover:bg-white border-none px-3 py-1 text-sm font-semibold shadow-lg">
