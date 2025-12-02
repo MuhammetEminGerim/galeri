@@ -98,37 +98,37 @@ export function SoldCarsDialog({
                                             </div>
 
                                             {/* Bottom Overlay for Details */}
-                                            <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 sm:p-10 pt-20 flex flex-col gap-4">
-                                                <div className="flex items-start justify-between gap-4">
-                                                    <div>
-                                                        <div className="flex items-center gap-3 mb-2">
-                                                            <h3 className="text-2xl sm:text-4xl font-bold text-white drop-shadow-lg">
+                                            <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 sm:p-10 pt-20 flex flex-col gap-2 sm:gap-4">
+                                                <div className="flex flex-col sm:flex-row items-start justify-between gap-2 sm:gap-4">
+                                                    <div className="w-full">
+                                                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                                                            <h3 className="text-xl sm:text-4xl font-bold text-white drop-shadow-lg">
                                                                 {car.brand} {car.model}
                                                             </h3>
-                                                            <Badge className="bg-white text-black hover:bg-white/90 border-none text-xs font-bold px-2 py-0.5">
+                                                            <Badge className="bg-white text-black hover:bg-white/90 border-none text-[10px] sm:text-xs font-bold px-1.5 py-0.5 sm:px-2 sm:py-0.5">
                                                                 SATILDI
                                                             </Badge>
                                                         </div>
 
-                                                        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                                                            <Badge variant="outline" className="bg-black/40 text-white border-white/20 backdrop-blur-md px-3 py-1.5 text-sm">
-                                                                <Calendar className="w-3.5 h-3.5 mr-2 text-zinc-400" />
+                                                        <div className="flex flex-wrap items-center gap-1.5 sm:gap-3">
+                                                            <Badge variant="outline" className="bg-black/40 text-white border-white/20 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 text-[10px] sm:text-sm">
+                                                                <Calendar className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1.5 sm:mr-2 text-zinc-400" />
                                                                 {car.year}
                                                             </Badge>
-                                                            <Badge variant="outline" className="bg-black/40 text-white border-white/20 backdrop-blur-md px-3 py-1.5 text-sm">
-                                                                <Gauge className="w-3.5 h-3.5 mr-2 text-zinc-400" />
+                                                            <Badge variant="outline" className="bg-black/40 text-white border-white/20 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 text-[10px] sm:text-sm">
+                                                                <Gauge className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1.5 sm:mr-2 text-zinc-400" />
                                                                 {car.km.toLocaleString('tr-TR')} KM
                                                             </Badge>
-                                                            <Badge variant="outline" className="bg-black/40 text-white border-white/20 backdrop-blur-md px-3 py-1.5 text-sm">
-                                                                <Fuel className="w-3.5 h-3.5 mr-2 text-zinc-400" />
+                                                            <Badge variant="outline" className="bg-black/40 text-white border-white/20 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 text-[10px] sm:text-sm">
+                                                                <Fuel className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1.5 sm:mr-2 text-zinc-400" />
                                                                 {car.fuelType}
                                                             </Badge>
                                                         </div>
                                                     </div>
 
-                                                    <div className="hidden sm:block text-right">
-                                                        <p className="text-xs text-zinc-400 mb-1">Satış Tarihi</p>
-                                                        <p className="text-white font-medium">
+                                                    <div className="w-full sm:w-auto flex justify-between sm:block sm:text-right border-t border-white/10 pt-2 sm:border-none sm:pt-0 mt-2 sm:mt-0">
+                                                        <p className="text-[10px] sm:text-xs text-zinc-400 mb-0.5 sm:mb-1">Satış Tarihi</p>
+                                                        <p className="text-sm sm:text-base text-white font-medium">
                                                             {car.soldAt ? new Date(car.soldAt).toLocaleDateString('tr-TR', { month: 'long', year: 'numeric' }) : '-'}
                                                         </p>
                                                     </div>
@@ -138,8 +138,8 @@ export function SoldCarsDialog({
                                     </CarouselItem>
                                 ))}
                             </CarouselContent>
-                            <CarouselPrevious className="left-4 bg-white/10 hover:bg-white/20 border-none text-white h-12 w-12" />
-                            <CarouselNext className="right-4 bg-white/10 hover:bg-white/20 border-none text-white h-12 w-12" />
+                            <CarouselPrevious className="left-2 sm:left-4 bg-white/10 hover:bg-white/20 border-none text-white h-8 w-8 sm:h-12 sm:w-12" />
+                            <CarouselNext className="right-2 sm:right-4 bg-white/10 hover:bg-white/20 border-none text-white h-8 w-8 sm:h-12 sm:w-12" />
                         </Carousel>
                     )}
                 </div>
