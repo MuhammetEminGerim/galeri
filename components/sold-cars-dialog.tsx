@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Image from 'next/image';
-import { X } from 'lucide-react';
+import { X, Calendar, Gauge, Fuel } from 'lucide-react';
 import {
     Dialog,
     DialogContent,
@@ -99,12 +99,20 @@ export function SoldCarsDialog({
                                                         <div className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                                             <div>
                                                                 <h3 className="text-2xl font-bold text-white">{car.brand} {car.model}</h3>
-                                                                <div className="flex items-center gap-3 mt-2 text-sm text-zinc-400">
-                                                                    <span>{car.year}</span>
-                                                                    <span className="w-1 h-1 rounded-full bg-zinc-600" />
-                                                                    <span>{car.km.toLocaleString('tr-TR')} KM</span>
-                                                                    <span className="w-1 h-1 rounded-full bg-zinc-600" />
-                                                                    <span>{car.fuelType}</span>
+
+                                                                <div className="flex flex-wrap items-center gap-2 mt-3">
+                                                                    <Badge variant="secondary" className="bg-zinc-800 text-zinc-300 hover:bg-zinc-700 border-zinc-700">
+                                                                        <Calendar className="w-3 h-3 mr-1.5" />
+                                                                        {car.year}
+                                                                    </Badge>
+                                                                    <Badge variant="secondary" className="bg-zinc-800 text-zinc-300 hover:bg-zinc-700 border-zinc-700">
+                                                                        <Gauge className="w-3 h-3 mr-1.5" />
+                                                                        {car.km.toLocaleString('tr-TR')} KM
+                                                                    </Badge>
+                                                                    <Badge variant="secondary" className="bg-zinc-800 text-zinc-300 hover:bg-zinc-700 border-zinc-700">
+                                                                        <Fuel className="w-3 h-3 mr-1.5" />
+                                                                        {car.fuelType}
+                                                                    </Badge>
                                                                 </div>
                                                             </div>
                                                             <div className="text-right hidden sm:block">
