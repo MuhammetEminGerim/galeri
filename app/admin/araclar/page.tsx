@@ -148,7 +148,7 @@ export default function AdminCarsPage() {
                         <Eye className="h-5 w-5" />
                       </Button>
                     </Link>
-                    <Link href={`/admin/araclar/${car.id}`}>
+                    <Link href={`/admin/araclar/duzenle?id=${car.id}`}>
                       <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-green-50 dark:hover:bg-green-900/10 hover:text-green-600">
                         <Pencil className="h-5 w-5" />
                       </Button>
