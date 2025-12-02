@@ -129,14 +129,7 @@ export async function getFilteredCars(filters: FilterOptions): Promise<Car[]> {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    cars = cars.filter((car) => {
-      if (car.status === 'available') return true;
-      if (car.status === 'sold') {
-        const saleDate = car.soldAt || car.updatedAt;
-        return saleDate >= thirtyDaysAgo;
-      }
-      return false;
-    });
+    cars = cars.filter((car) => car.status === 'available');
 
     // Client-side filtering (Firestore range queries için)
     if (filters.minYear) {
