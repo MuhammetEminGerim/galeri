@@ -95,11 +95,13 @@ export function Header() {
                   <Heart className="h-5 w-5" />
                 </Button>
               </Link>
+              {/* Compare feature disabled - uncomment to re-enable
               <Link href="/karsilastir">
                 <Button variant="ghost" size="icon" className="text-white hover:text-white/80 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full">
                   <Search className="h-5 w-5" />
                 </Button>
               </Link>
+              */}
             </div>
           </div>
         </div>
@@ -117,6 +119,7 @@ export function Header() {
             </Button>
           </Link>
 
+          {/* Compare feature disabled - uncomment to re-enable
           <Link href="/karsilastir">
             <Button variant="ghost" size="icon" className="relative hidden md:inline-flex">
               <Search className="h-5 w-5" />
@@ -127,6 +130,7 @@ export function Header() {
               )}
             </Button>
           </Link>
+          */}
 
           {/* Mobile Menu Button */}
           <Button
@@ -154,6 +158,7 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
+            {/* Compare feature disabled - uncomment to re-enable
             <Link
               href="/karsilastir"
               className="text-sm font-medium transition-colors hover:text-primary"
@@ -161,6 +166,7 @@ export function Header() {
             >
               Karşılaştır {compareList.length > 0 && `(${compareList.length})`}
             </Link>
+            */}
           </nav>
         </div>
       )}

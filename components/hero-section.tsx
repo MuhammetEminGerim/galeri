@@ -31,7 +31,7 @@ export function HeroSection() {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             Keyifle Yola{' '}
-            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 dark:from-blue-400 dark:via-indigo-400 dark:to-violet-400 bg-clip-text text-transparent">Çıkın</span>
+            <span className="bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 dark:from-orange-400 dark:via-amber-400 dark:to-orange-500 bg-clip-text text-transparent">Çıkın</span>
           </motion.h1>
           <motion.p
             className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed"

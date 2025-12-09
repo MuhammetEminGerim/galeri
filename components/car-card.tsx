@@ -22,7 +22,7 @@ interface CarCardProps {
   showCompare?: boolean;
 }
 
-export function CarCard({ car, showCompare = true }: CarCardProps) {
+export function CarCard({ car, showCompare = false }: CarCardProps) {
   const { toggleFavorite, isFavorite } = useFavorites();
   const { toggleCompare, isInCompare, canAddMore } = useCompare();
   const [isHovered, setIsHovered] = useState(false);
