@@ -143,7 +143,7 @@ export default function AdminCarsPage() {
                     >
                       <Star className={`h-5 w-5 ${car.featured ? 'fill-current' : ''}`} />
                     </Button>
-                    <Link href={`/araclar/${car.id}`} target="_blank">
+                    <Link href={`/araclar/detay?id=${car.id}`} target="_blank">
                       <Button variant="ghost" size="icon" className="h-10 w-10 hover:bg-blue-50 dark:hover:bg-blue-900/10 hover:text-blue-600">
                         <Eye className="h-5 w-5" />
                       </Button>

@@ -95,7 +95,7 @@ export function CarCard({ car, showCompare = false }: CarCardProps) {
             {car.images && car.images.length > 0 ? (
               car.images.map((image, index) => (
                 <div className="flex-[0_0_100%] min-w-0 relative h-full pl-[1px]" key={index}> {/* Padding to compensate */}
-                  <Link href={`/araclar/${car.id}`} className="block w-full h-full relative overflow-hidden">
+                  <Link href={`/araclar/detay?id=${car.id}`} className="block w-full h-full relative overflow-hidden">
                     <Image
                       src={image}
                       alt={`${car.brand} ${car.model} - ${index + 1}`}
@@ -109,7 +109,7 @@ export function CarCard({ car, showCompare = false }: CarCardProps) {
               ))
             ) : (
               <div className="flex-[0_0_100%] min-w-0 relative h-full">
-                <Link href={`/araclar/${car.id}`} className="block w-full h-full">
+                <Link href={`/araclar/detay?id=${car.id}`} className="block w-full h-full">
                   <div className="flex items-center justify-center h-full bg-gray-100 dark:bg-gray-800">
                     <span className="text-muted-foreground">Resim Yok</span>
                   </div>
@@ -196,7 +196,7 @@ export function CarCard({ car, showCompare = false }: CarCardProps) {
       </div>
 
       <CardContent className="p-4 space-y-4">
-        <Link href={`/araclar/${car.id}`}>
+        <Link href={`/araclar/detay?id=${car.id}`}>
           <div>
             <h3 className="text-lg font-semibold line-clamp-1 group-hover:text-primary transition-colors">
               {car.brand} {car.model}

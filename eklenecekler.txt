@@ -1,0 +1,7 @@
+# Eklenecekler ve Çözülecek Sorunlar
+
+1. [ ] Mobil Resim Yükleme Sorunu (Mobile Image Upload Issue)
+   - Sorun: Telefondan çok sayıda (30+) ve yüksek boyutlu (3-4MB) fotoğraf seçildiğinde tarayıcı çöküyor veya kilitleniyor.
+   - Sebep: Kod şu anda tüm resimleri aynı anda (paralel) sıkıştırmaya çalışıyor, bu da telefonun RAM'ini aşıyor.
+   - Çözüm: `components/admin/car-form.tsx` dosyasındaki `handleImageChange` fonksiyonu güncellenmeli. Resimler `Promise.all` yerine sırayla (işlem sırasına göre) işlenmeli.
+   - Not: `implementation_plan.md` dosyasında teknik detaylar mevcut.

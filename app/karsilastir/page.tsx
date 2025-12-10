@@ -100,7 +100,7 @@ export default function KarsilastirPage() {
                   </Button>
 
                   <CardHeader className="p-0">
-                    <Link href={`/araclar/${car.id}`}>
+                    <Link href={`/araclar/detay?id=${car.id}`}>
                       <div className="relative aspect-video overflow-hidden rounded-t-lg">
                         {car.images && car.images.length > 0 ? (
                           <Image
@@ -120,7 +120,7 @@ export default function KarsilastirPage() {
                   </CardHeader>
 
                   <CardContent className="p-4 space-y-3">
-                    <Link href={`/araclar/${car.id}`}>
+                    <Link href={`/araclar/detay?id=${car.id}`}>
                       <h3 className="text-lg font-semibold">
                         {car.brand} {car.model}
                       </h3>
@@ -135,7 +135,7 @@ export default function KarsilastirPage() {
                       </div>
                     ))}
 
-                    <Link href={`/araclar/${car.id}`}>
+                    <Link href={`/araclar/detay?id=${car.id}`}>
                       <Button variant="outline" className="w-full mt-4 !border !border-gray-500 dark:!border-gray-600">
                         Detayları Gör
                       </Button>

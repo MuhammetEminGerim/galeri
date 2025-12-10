@@ -174,7 +174,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
             <h3 className="font-semibold mb-3">Paylaş</h3>
             <ShareButtons
               carTitle={`${car.brand} ${car.model} (${car.year})`}
-              shareUrl={`https://autogaleri.com/araclar/${car.id}`}
+              shareUrl={`https://bolenotomotiv.com/araclar/detay?id=${car.id}`}
             />
           </div>
         </div>
